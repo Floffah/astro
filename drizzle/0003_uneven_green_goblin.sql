@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "birth_timestamp" SET DATA TYPE timestamp with time zone;

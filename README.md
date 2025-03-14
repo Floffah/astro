@@ -34,3 +34,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## LFS
+
+I utilise Git LFS to store large files such as the VSOP87 data. To install Git LFS, run the following two commands:
+
+```bash
+brew install git-lfs
+git lfs install
+```
+
+The files needed are:
+- `data/VSOP87_full.nc` (1.1gb) sourced from the LASP Interactive Solar Irradiance Datacenter (LISIRD) (https://lasp.colorado.edu/lisird/data/lasp_vsop87_1au_correction_PT1M)
+
+## Third Party Licenses
+
+### VSOP87 Data
+
+The results presented in this document rely on data produced by the Laboratory for Atmospheric and Space Physics (LASP) which implement the VSOP87 model described in Bretagnon et al. 1988 (https://adsabs.harvard.edu/full/1988A%26A...202..309B). These data were accessed via the LASP Interactive Solar Irradiance Datacenter (LISIRD) (https://lasp.colorado.edu/lisird/).
