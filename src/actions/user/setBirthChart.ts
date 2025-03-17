@@ -3,8 +3,8 @@
 import { eq } from "drizzle-orm";
 
 import { db, users } from "@/db";
+import { getNatalChart } from "@/lib/astrology/getNatalChart";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
-import { getNatalChart } from "@/lib/prokerala/getNatalChart";
 
 export async function setBirthChart(data: {
     birthDate: Date;
@@ -38,10 +38,12 @@ export async function setBirthChart(data: {
 
     const natalChart = await getNatalChart(data);
 
+    console.log(natalChart);
+
     await db
         .update(users)
         .set({
-            cachedNatalPlanetPositions: natalChart.data,
+            cachedNatalPlanetPositions: natalChart,
             onboarded: true,
         })
         .where(eq(users.id, user.id));

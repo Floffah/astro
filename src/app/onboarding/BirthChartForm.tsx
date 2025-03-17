@@ -27,7 +27,7 @@ export function BirthChartForm({ onSubmitted }: { onSubmitted: () => void }) {
                 birthDate: new Date(value.birthDate),
             });
 
-            if (result.success) {
+            if (result.success || result.error === "Birth chart already set") {
                 onSubmitted();
             }
         },

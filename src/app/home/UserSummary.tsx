@@ -42,7 +42,7 @@ export async function UserSummary() {
     }
 
     return (
-        <div className="prose prose-invert prose-sm w-full">
+        <div className="prose prose-invert prose-sm w-full rounded-lg bg-gray-800 p-4">
             {/* eslint-disable-next-line react-hooks/rules-of-hooks -- this is not actually a hook */}
             {useRemarkSync(summary)}
         </div>
