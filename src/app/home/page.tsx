@@ -1,9 +1,7 @@
-import { generateText } from "ai";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { UserSummary } from "@/app/home/UserSummary";
-import { deepseek } from "@/lib/ai/deepseek";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 
 export default async function HomePage() {

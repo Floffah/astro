@@ -1,8 +1,6 @@
 import {
     boolean,
-    decimal,
     json,
-    numeric,
     pgTable,
     real,
     serial,

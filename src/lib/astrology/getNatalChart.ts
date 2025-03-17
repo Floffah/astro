@@ -14,10 +14,6 @@ export async function getNatalChart(data: {
     params.set("latitude", data.lat.toString());
     params.set("longitude", data.long.toString());
 
-    console.log(
-        `https://astrocalc-api.onrender.com/birth-chart?${params.toString()}`,
-    );
-
     const response = await fetch(
         `https://astrocalc-api.onrender.com/birth-chart?${params.toString()}`,
     );

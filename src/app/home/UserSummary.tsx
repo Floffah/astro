@@ -1,6 +1,6 @@
 import { generateText } from "ai";
 import { eq } from "drizzle-orm";
-import { Remark, useRemarkSync } from "react-remark";
+import { useRemarkSync } from "react-remark";
 
 import { db, users } from "@/db";
 import { deepseek } from "@/lib/ai/deepseek";

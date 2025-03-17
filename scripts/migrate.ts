@@ -3,7 +3,7 @@ import { migrate } from "drizzle-orm/neon-http/migrator";
 
 import { db } from "@/db";
 
-if (process.env.DATABASE_URL) {
+if (process.env.DATABASE_URL || process.env.PRODUCTION_DATABASE_URL) {
     await migrate(db, {
         migrationsFolder: "./drizzle",
     });
