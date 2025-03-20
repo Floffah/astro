@@ -2,10 +2,12 @@
 
 import { randomInt } from "crypto";
 import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import VerifyEmail from "~emails/verify-email";
 
 import { db, loginRequests } from "@/db";
+import { getSessionFromRuntime } from "@/lib/data/getSession";
 import { resend } from "@/lib/resend";
 
 export async function sendCode(email: string) {
@@ -15,6 +17,16 @@ export async function sendCode(email: string) {
         return {
             success: false,
             error: "Invalid email",
+        };
+    }
+
+    const { user } = await getSessionFromRuntime();
+
+    if (user && user.email === email) {
+        redirect("/home");
+        return {
+            success: false,
+            error: "Already logged in",
         };
     }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 
@@ -21,7 +21,7 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
 
     const loginState = useLoginStore();
 
-    const isLoggedInQuery = useQuery({
+    useQuery({
         queryKey: ["isLoggedIn"],
         queryFn: async () => {
             router.prefetch("/home");
@@ -92,16 +92,11 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
                             description="You will be sent a verification email"
                             label="Email"
                             placeholder="you@example.com"
-                            disabled={isLoggedInQuery.isLoading}
                         />
                     )}
                 </form.AppField>
 
-                <form.SubscribeButton
-                    color="primary"
-                    size="sm"
-                    loading={isLoggedInQuery.isLoading}
-                >
+                <form.SubscribeButton color="primary" size="sm">
                     Login
                 </form.SubscribeButton>
 

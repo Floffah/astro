@@ -38,8 +38,6 @@ export async function setBirthChart(data: {
 
     const natalChart = await getNatalChart(data);
 
-    console.log(natalChart);
-
     await db
         .update(users)
         .set({

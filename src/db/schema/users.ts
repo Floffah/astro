@@ -1,3 +1,4 @@
+import type * as AstrocalcTypes from "~types/apis/astrocalc";
 import {
     boolean,
     json,
@@ -26,7 +27,9 @@ export const users = pgTable("users", {
     birthLatitude: real("birth_latitude"),
     birthLongitude: real("birth_longitude"),
 
-    cachedNatalPlanetPositions: json("cached_natal_planet_positions"),
+    cachedNatalPlanetPositions: json("cached_natal_planet_positions").$type<
+        AstrocalcTypes.operations["calculateBirthChart"]["responses"]["200"]["content"]["application/json"]
+    >(),
 
     summary: text("summary"),
 

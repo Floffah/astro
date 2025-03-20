@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -15,7 +15,9 @@ export default function OnboardingPage() {
 
     return (
         <div className="relative h-screen">
-            <AnimatePresence onExitComplete={() => router.push("/home")}>
+            <AnimatePresence
+                onExitComplete={() => router.push("/onboarding/warning")}
+            >
                 {!modalExitComplete && (
                     <motion.div
                         initial={{
