@@ -100,6 +100,16 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaZodiacSign = components['schemas']['ZodiacSign'];
+export type SchemaPlanet = components['schemas']['Planet'];
+export type SchemaBirthChartSign = components['schemas']['BirthChartSign'];
+export type SchemaZodiacPosition = components['schemas']['ZodiacPosition'];
+export type SchemaHouseCusp = components['schemas']['HouseCusp'];
+export type SchemaPlanetPosition = components['schemas']['PlanetPosition'];
+export type SchemaAnglePosition = components['schemas']['AnglePosition'];
+export type SchemaAspectType = components['schemas']['AspectType'];
+export type SchemaAspect = components['schemas']['Aspect'];
+export type SchemaErrorResponse = components['schemas']['ErrorResponse'];
 export type $defs = Record<string, never>;
 export interface operations {
     calculateBirthChart: {

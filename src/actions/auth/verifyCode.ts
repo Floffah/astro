@@ -2,8 +2,9 @@
 
 import cryptoRandomString from "crypto-random-string";
 import { addMonths } from "date-fns";
-import { eq } from "drizzle-orm";
+import { eq, lt } from "drizzle-orm";
 import { cookies as nextCookies } from "next/headers";
+import { after } from "next/server";
 import { z } from "zod";
 
 import { db, loginRequests, userSessions, users } from "@/db";
@@ -73,6 +74,12 @@ export async function verifyCode(email: string, code: string) {
         maxAge: 60 * 60 * 24 * 30,
         expires: expiresAt,
         secure: true,
+    });
+
+    after(async () => {
+        await db
+            .delete(userSessions)
+            .where(lt(userSessions.expiresAt, new Date()));
     });
 
     return {

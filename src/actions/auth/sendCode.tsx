@@ -1,8 +1,9 @@
 "use server";
 
 import { randomInt } from "crypto";
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { z } from "zod";
 import VerifyEmail from "~emails/verify-email";
 
@@ -30,9 +31,18 @@ export async function sendCode(email: string) {
         };
     }
 
-    await db.delete(loginRequests).where(eq(loginRequests.email, email));
-
     const code = randomInt(100000, 999999).toString();
+
+    after(async () => {
+        await db
+            .delete(loginRequests)
+            .where(
+                and(
+                    eq(loginRequests.email, email),
+                    ne(loginRequests.code, code),
+                ),
+            );
+    });
 
     await db.insert(loginRequests).values({
         email,

@@ -32,6 +32,9 @@ export const users = pgTable("users", {
     >(),
 
     summary: text("summary"),
+    sunSignSummary: text("sun_sign_summary"),
+    moonSignSummary: text("moon_sign_summary"),
+    ascendantSignSummary: text("ascendant_sign_summary"),
 
     createdAt: createdAt(),
     updatedAt: updatedAt(),

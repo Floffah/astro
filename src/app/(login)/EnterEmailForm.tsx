@@ -1,12 +1,15 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { parse } from "cookie";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { isLoggedIn } from "@/actions/auth/isLoggedIn";
 import { sendCode } from "@/actions/auth/sendCode";
+import { Loader } from "@/components/Loader";
+import { SESSION_TOKEN } from "@/lib/constants";
 import { useAppForm } from "@/lib/useAppForm";
 import { useLoginStore } from "@/state/loginStore";
 
@@ -21,11 +24,24 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
 
     const loginState = useLoginStore();
 
-    useQuery({
+    const possiblyLoggedInQuery = useQuery({
+        queryKey: ["possiblyLoggedIn"],
+        queryFn: async () => {
+            const cookie = parse(document.cookie);
+
+            const possiblyLoggedIn = SESSION_TOKEN in cookie;
+
+            if (possiblyLoggedIn) {
+                router.prefetch("/home");
+            }
+
+            return possiblyLoggedIn;
+        },
+    });
+
+    const isLoggedInQuery = useQuery({
         queryKey: ["isLoggedIn"],
         queryFn: async () => {
-            router.prefetch("/home");
-
             const loggedIn = await isLoggedIn();
 
             if (loggedIn) {
@@ -34,6 +50,7 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
 
             return loggedIn;
         },
+        enabled: !possiblyLoggedInQuery.isLoading,
     });
 
     const sendCodeMutation = useMutation({
@@ -57,6 +74,10 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
             onSubmit: formSchema,
         },
         onSubmit: async ({ value }) => {
+            if (possiblyLoggedInQuery.data && isLoggedInQuery.isLoading) {
+                return;
+            }
+
             try {
                 await sendCodeMutation.mutateAsync(value);
             } catch {
@@ -92,13 +113,30 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
                             description="You will be sent a verification email"
                             label="Email"
                             placeholder="you@example.com"
+                            disabled={
+                                possiblyLoggedInQuery.data &&
+                                isLoggedInQuery.isLoading
+                            }
                         />
                     )}
                 </form.AppField>
 
-                <form.SubscribeButton color="primary" size="sm">
-                    Login
-                </form.SubscribeButton>
+                {possiblyLoggedInQuery.isLoading && (
+                    <Loader className="mx-auto h-4 w-4 text-gray-400" />
+                )}
+
+                {!possiblyLoggedInQuery.isLoading && (
+                    <form.SubscribeButton
+                        color="primary"
+                        size="sm"
+                        loading={
+                            possiblyLoggedInQuery.data &&
+                            isLoggedInQuery.isLoading
+                        }
+                    >
+                        Login
+                    </form.SubscribeButton>
+                )}
 
                 <form.SubmitError error={sendCodeMutation.error} />
             </form.AppForm>

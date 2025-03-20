@@ -41,6 +41,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             link,
             icon,
             iconLabel,
+            disabled: propsDisabled,
             loading: propsLoading,
             children: propsChildren,
             onClick,
@@ -55,7 +56,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         const Component =
             asChild && typeof propsChildren !== "string" ? Slot : "button";
-        const disabled = loading || props.disabled;
+        const disabled = loading || propsDisabled;
 
         useEffect(() => {
             setLoading(!!propsLoading);

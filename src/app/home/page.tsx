@@ -21,8 +21,6 @@ export default async function HomePage() {
                 <LogoutButton />
             </div>
 
-            <h1 className="text-3xl font-bold text-white">My Profile</h1>
-
             <Suspense
                 fallback={
                     <div className="h-36 w-full animate-pulse rounded-lg bg-gray-800" />
