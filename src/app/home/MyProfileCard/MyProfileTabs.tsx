@@ -69,25 +69,26 @@ export function MyProfileTabs({
             </Tabs.List>
 
             <div className="flex flex-grow flex-col gap-2">
-                <Tabs.Content value="overview" asChild>
-                    {children}
-                </Tabs.Content>
+                <Tabs.Content value="overview">{children}</Tabs.Content>
 
-                <Tabs.Content value="sun" asChild>
+                <Tabs.Content value="sun">
                     <Suspense fallback={<TextSkeletonLoader />}>
-                        <SignSummary handler={getSunSignSummary} />
+                        <SignSummary name="sun" action={getSunSignSummary} />
                     </Suspense>
                 </Tabs.Content>
 
-                <Tabs.Content value="moon" asChild>
+                <Tabs.Content value="moon">
                     <Suspense fallback={<TextSkeletonLoader />}>
-                        <SignSummary handler={getMoonSignSummary} />
+                        <SignSummary name="moon" action={getMoonSignSummary} />
                     </Suspense>
                 </Tabs.Content>
 
-                <Tabs.Content value="ascendant" asChild>
+                <Tabs.Content value="ascendant">
                     <Suspense fallback={<TextSkeletonLoader />}>
-                        <SignSummary handler={getAscendantSignSummary} />
+                        <SignSummary
+                            name="ascendant"
+                            action={getAscendantSignSummary}
+                        />
                     </Suspense>
                 </Tabs.Content>
 

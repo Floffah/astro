@@ -4,13 +4,16 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Remark } from "react-remark";
 
 export function SignSummary({
-    handler,
+    action,
+    name,
 }: {
-    handler: () => Promise<{ error: null | string; content: null | string }>;
+    action: () => Promise<{ error: null | string; content: null | string }>;
+    name: string;
 }) {
     const sunSignSummaryQuery = useSuspenseQuery({
-        queryKey: ["getSunSignSummary"],
-        queryFn: () => handler(),
+        queryKey: ["getSunSignSummary", name],
+        queryFn: () => action(),
+        networkMode: "offlineFirst",
     });
 
     return (
