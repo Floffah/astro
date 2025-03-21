@@ -8,7 +8,7 @@ import {
     SunriseIcon,
 } from "lucide-react";
 import { PropsWithChildren, Suspense } from "react";
-import { operations } from "~types/apis/astrocalc";
+import { SchemaCalculateBirthChartResponse } from "~types/apis/astrocalc";
 
 import {
     getAscendantSignSummary,
@@ -23,7 +23,7 @@ export function MyProfileTabs({
     signs,
     children,
 }: PropsWithChildren<{
-    signs: operations["calculateBirthChart"]["responses"]["200"]["content"]["application/json"]["signs"];
+    signs: SchemaCalculateBirthChartResponse["signs"];
 }>) {
     return (
         <Tabs.Root

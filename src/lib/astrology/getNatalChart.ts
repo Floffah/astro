@@ -1,3 +1,5 @@
+import { SchemaCalculateBirthChartResponse } from "~types/apis/astrocalc";
+
 export async function getNatalChart(data: {
     birthDate: Date;
     lat: number;
@@ -17,5 +19,7 @@ export async function getNatalChart(data: {
     const response = await fetch(
         `https://astrocalc-api.onrender.com/birth-chart?${params.toString()}`,
     );
-    return await response.json();
+    return await response
+        .json()
+        .then((body) => body.data as SchemaCalculateBirthChartResponse);
 }

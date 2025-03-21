@@ -13,11 +13,29 @@ export interface paths {
         };
         /**
          * Calculate a birth chart
-         * @description This endpoint calculates a birth chart for a given date, time, and location.
-         *     It will give information such as: signs, houses, and aspects of the planets.
-         *
+         * @description This endpoint calculates a birth chart for a given date, time, and location. It will give information such as: signs, houses, and aspects of the planets.
          */
         get: operations["calculateBirthChart"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/daily-transits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Calculate daily transits
+         * @description This endpoint calculates the transits for a given day at a given location. Useful for generating horoscopes.
+         */
+        get: operations["calculateDailyTransits"];
         put?: never;
         post?: never;
         delete?: never;
@@ -30,68 +48,89 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        CalculateBirthChartResponse: {
+            signs: {
+                sun: components["schemas"]["ZodiacSignObject"];
+                moon: components["schemas"]["ZodiacSignObject"];
+                ascendant: components["schemas"]["ZodiacSignObject"];
+            };
+            houses: components["schemas"]["HouseObject"][];
+            planets: components["schemas"]["PlanetPositionObject"][];
+            angles: components["schemas"]["PlanetPositionObject"][];
+            aspects: components["schemas"]["AspectObject"][];
+            declinations: components["schemas"]["AspectObject"][];
+        };
+        ZodiacSignObject: {
+            value: components["schemas"]["ZodiacSign"];
+            degree: number;
+            cuspWarning: components["schemas"]["ZodiacSign"] | null;
+        };
         /** @enum {string} */
         ZodiacSign: "Aries" | "Taurus" | "Gemini" | "Cancer" | "Leo" | "Virgo" | "Libra" | "Scorpio" | "Sagittarius" | "Capricorn" | "Aquarius" | "Pisces";
+        HouseObject: {
+            id: number;
+            number: number;
+            cusp: components["schemas"]["ZodiacPositionObject"];
+        };
+        ZodiacPositionObject: {
+            longitude: number;
+            degree: number;
+            zodiac: components["schemas"]["ZodiacDetailsObject"];
+        };
+        ZodiacDetailsObject: {
+            id: number;
+            name: components["schemas"]["ZodiacSign"];
+            lord: {
+                id: components["schemas"]["PlanetId"];
+                name: components["schemas"]["Planet"];
+            };
+        };
+        /** @enum {number} */
+        PlanetId: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 15 | 100 | 103 | 104 | 105 | 107 | 108 | 109;
         /** @enum {string} */
-        Planet: "Sun" | "Moon" | "Mercury" | "Venus" | "Mars" | "Jupiter" | "Saturn" | "Uranus" | "Neptune" | "Pluto" | "Ascendant" | "Midheaven" | "Descendant" | "Nadir" | "Chiron" | "Lilith" | "True North Node" | "True South Node";
-        BirthChartSign: {
-            value?: components["schemas"]["ZodiacSign"];
-            degree?: number;
-            cuspWarning?: components["schemas"]["ZodiacSign"] | null;
+        Planet: "Sun" | "Moon" | "Mercury" | "Venus" | "Mars" | "Jupiter" | "Saturn" | "Uranus" | "Neptune" | "Pluto" | "Chiron" | "Ascendant" | "True North Node" | "True South Node" | "Lilith" | "Nadir" | "Descendant" | "MidHeaven";
+        PlanetPositionObject: {
+            id: components["schemas"]["PlanetId"];
+            name: components["schemas"]["Planet"];
+            longitude: number;
+            latitude?: number;
+            isRetrograde: boolean;
+            degree: number;
+            houseNumber: number;
+            zodiac: components["schemas"]["ZodiacDetailsObject"];
         };
-        ZodiacPosition: {
-            id?: number;
-            name?: components["schemas"]["ZodiacSign"];
-            lord?: {
-                id?: number;
-                name?: components["schemas"]["ZodiacSign"];
+        AspectObject: {
+            planet1: {
+                id: components["schemas"]["PlanetId"];
+                name: components["schemas"]["Planet"];
             };
-        };
-        HouseCusp: {
-            id?: number;
-            number?: number;
-            cusp?: {
-                longitude?: number;
-                degree?: number;
-                zodiac?: components["schemas"]["ZodiacPosition"];
+            planet2: {
+                id: components["schemas"]["PlanetId"];
+                name: components["schemas"]["Planet"];
             };
-        };
-        PlanetPosition: {
-            id?: number;
-            name?: components["schemas"]["Planet"];
-            longitude?: number;
-            is_retrograde?: boolean;
-            degree?: number;
-            zodiac?: components["schemas"]["ZodiacPosition"];
-        };
-        AnglePosition: {
-            id?: number;
-            name?: components["schemas"]["Planet"];
-            longitude?: number;
-            is_retrograde?: boolean;
-            degree?: number;
-            house_number?: number;
-            zodiac?: components["schemas"]["ZodiacPosition"];
+            aspect: {
+                id: number;
+                name: components["schemas"]["Aspect"];
+            };
+            orb: number;
         };
         /** @enum {string} */
-        AspectType: "Conjunction" | "Opposition" | "Trine" | "Square" | "Sextile" | "Quincunx" | "Semi Sextile" | "Semi Square" | "Sesquiquadrate" | "Quintile" | "Bi Quintile" | "Septile" | "Bi Septile" | "Tri Septile" | "Novile" | "Quincunx" | "Parallel" | "Contraparallel";
-        Aspect: {
-            planet_one?: {
-                id?: number;
-                name?: components["schemas"]["Planet"];
-            };
-            planet_two?: {
-                id?: number;
-                name?: components["schemas"]["Planet"];
-            };
-            aspect?: {
-                id?: number;
-                name?: components["schemas"]["AspectType"];
-            };
-            orb?: number;
-        };
+        Aspect: "Conjunction" | "Opposition" | "Square" | "Semi Square" | "Sesquiquadrate" | "Trine" | "Sextile" | "Semi Sextile" | "Quincunx" | "Quintile" | "Bi Quintile" | "Parallel" | "Contraparallel";
+        /** @description An error response. Note that 'error' can be a string, or a ZodError object. */
         ErrorResponse: {
-            error?: string;
+            /** @constant */
+            success: false;
+            error: string | {
+                issues: {
+                    code: string;
+                    message: string;
+                    path: string[];
+                }[];
+            };
+        };
+        CalculateDailyTransitsResponse: {
+            transitDetails: components["schemas"]["CalculateBirthChartResponse"];
+            transitNatalAspects: components["schemas"]["AspectObject"][];
         };
     };
     responses: never;
@@ -100,34 +139,30 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaCalculateBirthChartResponse = components['schemas']['CalculateBirthChartResponse'];
+export type SchemaZodiacSignObject = components['schemas']['ZodiacSignObject'];
 export type SchemaZodiacSign = components['schemas']['ZodiacSign'];
+export type SchemaHouseObject = components['schemas']['HouseObject'];
+export type SchemaZodiacPositionObject = components['schemas']['ZodiacPositionObject'];
+export type SchemaZodiacDetailsObject = components['schemas']['ZodiacDetailsObject'];
+export type SchemaPlanetId = components['schemas']['PlanetId'];
 export type SchemaPlanet = components['schemas']['Planet'];
-export type SchemaBirthChartSign = components['schemas']['BirthChartSign'];
-export type SchemaZodiacPosition = components['schemas']['ZodiacPosition'];
-export type SchemaHouseCusp = components['schemas']['HouseCusp'];
-export type SchemaPlanetPosition = components['schemas']['PlanetPosition'];
-export type SchemaAnglePosition = components['schemas']['AnglePosition'];
-export type SchemaAspectType = components['schemas']['AspectType'];
+export type SchemaPlanetPositionObject = components['schemas']['PlanetPositionObject'];
+export type SchemaAspectObject = components['schemas']['AspectObject'];
 export type SchemaAspect = components['schemas']['Aspect'];
 export type SchemaErrorResponse = components['schemas']['ErrorResponse'];
+export type SchemaCalculateDailyTransitsResponse = components['schemas']['CalculateDailyTransitsResponse'];
 export type $defs = Record<string, never>;
 export interface operations {
     calculateBirthChart: {
         parameters: {
             query: {
-                /** @description The year of birth */
                 year: number;
-                /** @description The month of birth. NOT zero-indexed. */
                 month: number;
-                /** @description The day of birth */
                 day: number;
-                /** @description The hour of birth */
                 hour?: number;
-                /** @description The minute of birth */
                 minute?: number;
-                /** @description The latitude of birth */
                 latitude: number;
-                /** @description The longitude of birth */
                 longitude: number;
             };
             header?: never;
@@ -143,20 +178,57 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        signs?: {
-                            sun?: components["schemas"]["BirthChartSign"];
-                            moon?: components["schemas"]["BirthChartSign"];
-                            ascendant?: components["schemas"]["BirthChartSign"];
-                        };
-                        houses?: components["schemas"]["HouseCusp"][];
-                        planets?: components["schemas"]["PlanetPosition"][];
-                        angles?: components["schemas"]["AnglePosition"][];
-                        aspects?: components["schemas"]["Aspect"][];
-                        declinations?: components["schemas"]["Aspect"][];
+                        success: boolean;
+                        data: components["schemas"]["CalculateBirthChartResponse"];
                     };
                 };
             };
-            /** @description Bad Request */
+            /** @description User Error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    calculateDailyTransits: {
+        parameters: {
+            query: {
+                birthYear: number;
+                birthMonth: number;
+                birthDay: number;
+                birthMinute?: number;
+                birthHour?: number;
+                birthLatitude: number;
+                birthLongitude: number;
+                transitYear?: number;
+                transitMonth?: number;
+                transitDay?: number;
+                transitLatitude: number;
+                transitLongitude: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: components["schemas"]["CalculateDailyTransitsResponse"];
+                    };
+                };
+            };
+            /** @description User Error */
             400: {
                 headers: {
                     [name: string]: unknown;

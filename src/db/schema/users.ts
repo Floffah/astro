@@ -1,4 +1,3 @@
-import type * as AstrocalcTypes from "~types/apis/astrocalc";
 import {
     boolean,
     json,
@@ -9,6 +8,7 @@ import {
     timestamp,
     varchar,
 } from "drizzle-orm/pg-core";
+import { SchemaCalculateBirthChartResponse } from "~types/apis/astrocalc";
 
 import { createdAt, publicId, updatedAt } from "@/db/schema/fields";
 
@@ -27,9 +27,9 @@ export const users = pgTable("users", {
     birthLatitude: real("birth_latitude"),
     birthLongitude: real("birth_longitude"),
 
-    cachedNatalPlanetPositions: json("cached_natal_planet_positions").$type<
-        AstrocalcTypes.operations["calculateBirthChart"]["responses"]["200"]["content"]["application/json"]
-    >(),
+    cachedNatalPlanetPositions: json(
+        "cached_natal_planet_positions",
+    ).$type<SchemaCalculateBirthChartResponse>(),
 
     summary: text("summary"),
     sunSignSummary: text("sun_sign_summary"),
