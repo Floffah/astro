@@ -1,0 +1,1 @@
+ALTER TABLE "horoscopes" ADD COLUMN "date" date NOT NULL;

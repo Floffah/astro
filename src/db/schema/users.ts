@@ -19,6 +19,7 @@ export const users = pgTable("users", {
     email: varchar("email", { length: 320 }).notNull().unique(),
 
     onboarded: boolean("onboarded").default(false),
+    premium: boolean("premium").default(false),
 
     birthTimestamp: timestamp("birth_timestamp", {
         withTimezone: true,

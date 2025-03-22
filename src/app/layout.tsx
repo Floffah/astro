@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { PropsWithChildren } from "react";
 
+import { DialogProvider } from "@/providers/DialogProvider";
 import { QueryClientProvider } from "@/providers/QueryClientProvider";
 
 import "./globals.css";
@@ -29,7 +30,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
             className={clsx(geistSans.variable, geistMono.variable)}
         >
             <body className="bg-gray-950 antialiased">
-                <QueryClientProvider>{children}</QueryClientProvider>
+                <QueryClientProvider>
+                    <DialogProvider>{children}</DialogProvider>
+                </QueryClientProvider>
             </body>
         </html>
     );

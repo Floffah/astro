@@ -51,7 +51,7 @@ export interface components {
         CalculateBirthChartResponse: {
             signs: {
                 sun: components["schemas"]["ZodiacSignObject"];
-                moon: components["schemas"]["ZodiacSignObject"];
+                moon: components["schemas"]["ZodiacMoonSignObject"];
                 ascendant: components["schemas"]["ZodiacSignObject"];
             };
             houses: components["schemas"]["HouseObject"][];
@@ -67,6 +67,12 @@ export interface components {
         };
         /** @enum {string} */
         ZodiacSign: "Aries" | "Taurus" | "Gemini" | "Cancer" | "Leo" | "Virgo" | "Libra" | "Scorpio" | "Sagittarius" | "Capricorn" | "Aquarius" | "Pisces";
+        ZodiacMoonSignObject: {
+            phase: components["schemas"]["MoonPhase"];
+            isVoidOfCourse: boolean;
+        } & components["schemas"]["ZodiacSignObject"];
+        /** @enum {string} */
+        MoonPhase: "New Moon" | "Waxing Crescent" | "First Quarter" | "Waxing Gibbous" | "Full Moon" | "Waning Gibbous" | "Last Quarter" | "Waning Crescent";
         HouseObject: {
             id: number;
             number: number;
@@ -103,16 +109,20 @@ export interface components {
             planet1: {
                 id: components["schemas"]["PlanetId"];
                 name: components["schemas"]["Planet"];
+                fromChart?: string;
             };
             planet2: {
                 id: components["schemas"]["PlanetId"];
                 name: components["schemas"]["Planet"];
+                fromChart?: string;
             };
             aspect: {
                 id: number;
                 name: components["schemas"]["Aspect"];
             };
             orb: number;
+            /** @enum {string} */
+            typeOfAspect: "transit-to-natal" | "natal-to-natal" | "transit-to-transit";
         };
         /** @enum {string} */
         Aspect: "Conjunction" | "Opposition" | "Square" | "Semi Square" | "Sesquiquadrate" | "Trine" | "Sextile" | "Semi Sextile" | "Quincunx" | "Quintile" | "Bi Quintile" | "Parallel" | "Contraparallel";
@@ -129,8 +139,16 @@ export interface components {
             };
         };
         CalculateDailyTransitsResponse: {
-            transitDetails: components["schemas"]["CalculateBirthChartResponse"];
+            transitChart: components["schemas"]["CalculateBirthChartResponse"];
             transitNatalAspects: components["schemas"]["AspectObject"][];
+            notableEvents: {
+                retrogradePlanets: components["schemas"]["Planet"][];
+                ingresses: components["schemas"]["IngressObject"][];
+            };
+        };
+        IngressObject: {
+            planet: components["schemas"]["Planet"];
+            enteredSign: components["schemas"]["ZodiacSign"];
         };
     };
     responses: never;
@@ -142,6 +160,8 @@ export interface components {
 export type SchemaCalculateBirthChartResponse = components['schemas']['CalculateBirthChartResponse'];
 export type SchemaZodiacSignObject = components['schemas']['ZodiacSignObject'];
 export type SchemaZodiacSign = components['schemas']['ZodiacSign'];
+export type SchemaZodiacMoonSignObject = components['schemas']['ZodiacMoonSignObject'];
+export type SchemaMoonPhase = components['schemas']['MoonPhase'];
 export type SchemaHouseObject = components['schemas']['HouseObject'];
 export type SchemaZodiacPositionObject = components['schemas']['ZodiacPositionObject'];
 export type SchemaZodiacDetailsObject = components['schemas']['ZodiacDetailsObject'];
@@ -152,6 +172,7 @@ export type SchemaAspectObject = components['schemas']['AspectObject'];
 export type SchemaAspect = components['schemas']['Aspect'];
 export type SchemaErrorResponse = components['schemas']['ErrorResponse'];
 export type SchemaCalculateDailyTransitsResponse = components['schemas']['CalculateDailyTransitsResponse'];
+export type SchemaIngressObject = components['schemas']['IngressObject'];
 export type $defs = Record<string, never>;
 export interface operations {
     calculateBirthChart: {

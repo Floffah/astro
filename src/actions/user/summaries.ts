@@ -51,6 +51,7 @@ export async function getSunSignSummary() {
                 natalChart: user.cachedNatalPlanetPositions,
             },
         )}\n\`\`\``,
+        temperature: 1.0,
     });
 
     after(async () => {
@@ -111,6 +112,7 @@ export async function getMoonSignSummary() {
                 natalChart: user.cachedNatalPlanetPositions,
             },
         )}\n\`\`\``,
+        temperature: 1.0,
     });
 
     after(async () => {
@@ -175,6 +177,7 @@ export async function getAscendantSignSummary() {
                 natalChart: user.cachedNatalPlanetPositions,
             },
         )}\n\`\`\``,
+        temperature: 1.0,
     });
 
     after(async () => {

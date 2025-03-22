@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { LogoutButton } from "@/app/home/LogoutButton";
+import { HoroscopeTimeline } from "@/app/home/HoroscopeTimeline";
+import { HoroscopeTimelineLoader } from "@/app/home/HoroscopeTimeline/loader";
 import { MyProfileCard } from "@/app/home/MyProfileCard";
+import { NavBar } from "@/components/blocks/NavBar";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 
 export default async function HomePage() {
@@ -15,11 +17,7 @@ export default async function HomePage() {
 
     return (
         <div className="flex flex-col gap-4 p-4">
-            <div className="flex items-center justify-between border-b border-b-gray-800 px-4 py-2">
-                <p className="text-xl font-bold text-white">My Atlas</p>
-
-                <LogoutButton />
-            </div>
+            <NavBar />
 
             <Suspense
                 fallback={
@@ -27,6 +25,10 @@ export default async function HomePage() {
                 }
             >
                 <MyProfileCard />
+            </Suspense>
+
+            <Suspense fallback={<HoroscopeTimelineLoader />}>
+                <HoroscopeTimeline />
             </Suspense>
         </div>
     );
