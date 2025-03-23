@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import * as motion from "motion/react-client";
+import { AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 

@@ -1,14 +1,14 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { parse } from "cookie";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { z } from "zod";
 
-import { isLoggedIn } from "@/actions/auth/isLoggedIn";
-import { sendCode } from "@/actions/auth/sendCode";
 import { Loader } from "@/components/Loader";
+import { api } from "@/lib/api";
 import { SESSION_TOKEN } from "@/lib/constants";
 import { useAppForm } from "@/lib/useAppForm";
 import { useLoginStore } from "@/state/loginStore";
@@ -39,32 +39,10 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
         },
     });
 
-    const isLoggedInQuery = useQuery({
-        queryKey: ["isLoggedIn"],
-        queryFn: async () => {
-            const loggedIn = await isLoggedIn();
+    const meQuery = api.user.me.useQuery();
 
-            if (loggedIn) {
-                router.push("/home");
-            }
-
-            return loggedIn;
-        },
-        enabled: !possiblyLoggedInQuery.isLoading,
-    });
-
-    const sendCodeMutation = useMutation({
-        mutationKey: ["sendCode"],
-        mutationFn: async (variables: { email: string }) => {
-            const result = await sendCode(variables.email);
-
-            if (result.success) {
-                return true;
-            } else {
-                throw new Error(result.error);
-            }
-        },
-    });
+    const sendCodeMutation =
+        api.authentication.getVerificationCode.useMutation();
 
     const form = useAppForm({
         defaultValues: {
@@ -74,7 +52,7 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
             onSubmit: formSchema,
         },
         onSubmit: async ({ value }) => {
-            if (possiblyLoggedInQuery.data && isLoggedInQuery.isLoading) {
+            if (possiblyLoggedInQuery.data && meQuery.isLoading) {
                 return;
             }
 
@@ -89,6 +67,12 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
             onCodeSent();
         },
     });
+
+    useEffect(() => {
+        if (meQuery.data) {
+            router.push("/home");
+        }
+    }, [meQuery.data]);
 
     return (
         <motion.form
@@ -114,8 +98,7 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
                             label="Email"
                             placeholder="you@example.com"
                             disabled={
-                                possiblyLoggedInQuery.data &&
-                                isLoggedInQuery.isLoading
+                                possiblyLoggedInQuery.data && meQuery.isLoading
                             }
                         />
                     )}
@@ -130,8 +113,7 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
                         color="primary"
                         size="sm"
                         loading={
-                            possiblyLoggedInQuery.data &&
-                            isLoggedInQuery.isLoading
+                            possiblyLoggedInQuery.data && meQuery.isLoading
                         }
                     >
                         Login

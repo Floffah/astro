@@ -27,9 +27,11 @@ export default async function HomePage() {
                 <MyProfileCard />
             </Suspense>
 
-            <Suspense fallback={<HoroscopeTimelineLoader />}>
-                <HoroscopeTimeline />
-            </Suspense>
+            {user && (
+                <Suspense fallback={<HoroscopeTimelineLoader />}>
+                    <HoroscopeTimeline />
+                </Suspense>
+            )}
         </div>
     );
 }

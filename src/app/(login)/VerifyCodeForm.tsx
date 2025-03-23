@@ -1,11 +1,10 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 
-import { verifyCode } from "@/actions/auth/verifyCode";
+import { api } from "@/lib/api";
 import { useAppForm } from "@/lib/useAppForm";
 import { useLoginStore } from "@/state/loginStore";
 
@@ -20,18 +19,7 @@ export function VerifyCodeForm() {
 
     const loginState = useLoginStore();
 
-    const verifyCodeMutation = useMutation({
-        mutationKey: ["verifyCode"],
-        mutationFn: async (variables: { code: string }) => {
-            const result = await verifyCode(loginState.email, variables.code);
-
-            if (result.success) {
-                return result;
-            } else {
-                throw new Error(result.error);
-            }
-        },
-    });
+    const verifyCodeMutation = api.authentication.verifyCode.useMutation();
 
     const form = useAppForm({
         defaultValues: {
@@ -48,7 +36,10 @@ export function VerifyCodeForm() {
             >;
 
             try {
-                result = await verifyCodeMutation.mutateAsync(value);
+                result = await verifyCodeMutation.mutateAsync({
+                    code: value.code,
+                    email: loginState.email,
+                });
             } catch {
                 return;
             }

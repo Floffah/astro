@@ -10,11 +10,6 @@ import {
 import { PropsWithChildren, Suspense } from "react";
 import { SchemaCalculateBirthChartResponse } from "~types/apis/astrocalc";
 
-import {
-    getAscendantSignSummary,
-    getMoonSignSummary,
-    getSunSignSummary,
-} from "@/actions/user/summaries";
 import { SignSummary } from "@/app/home/MyProfileCard/SignSummary";
 import { Icon } from "@/components/Icon";
 import { TextSkeletonLoader } from "@/components/TextSkeletonLoader";
@@ -73,22 +68,19 @@ export function MyProfileTabs({
 
                 <Tabs.Content value="sun">
                     <Suspense fallback={<TextSkeletonLoader />}>
-                        <SignSummary name="sun" action={getSunSignSummary} />
+                        <SignSummary name="sun" />
                     </Suspense>
                 </Tabs.Content>
 
                 <Tabs.Content value="moon">
                     <Suspense fallback={<TextSkeletonLoader />}>
-                        <SignSummary name="moon" action={getMoonSignSummary} />
+                        <SignSummary name="moon" />
                     </Suspense>
                 </Tabs.Content>
 
                 <Tabs.Content value="ascendant">
                     <Suspense fallback={<TextSkeletonLoader />}>
-                        <SignSummary
-                            name="ascendant"
-                            action={getAscendantSignSummary}
-                        />
+                        <SignSummary name="ascendant" />
                     </Suspense>
                 </Tabs.Content>
 

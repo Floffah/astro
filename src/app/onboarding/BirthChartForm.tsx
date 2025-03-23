@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 
-import { setBirthChart } from "@/actions/user/setBirthChart";
+import { api } from "@/lib/api";
 import { useAppForm } from "@/lib/useAppForm";
 
 const formSchema = z.object({
@@ -14,6 +14,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function BirthChartForm({ onSubmitted }: { onSubmitted: () => void }) {
+    const setBirthChartMutation = api.user.setBirthChart.useMutation();
+
     const form = useAppForm({
         defaultValues: {
             birthDate: "",
@@ -24,14 +26,12 @@ export function BirthChartForm({ onSubmitted }: { onSubmitted: () => void }) {
             onSubmit: formSchema,
         },
         onSubmit: async ({ value }) => {
-            const result = await setBirthChart({
+            await setBirthChartMutation.mutateAsync({
                 ...value,
                 birthDate: new Date(value.birthDate),
             });
 
-            if (result.success || result.error === "Birth chart already set") {
-                onSubmitted();
-            }
+            onSubmitted();
         },
     });
 

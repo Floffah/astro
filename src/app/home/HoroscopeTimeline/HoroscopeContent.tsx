@@ -1,38 +1,45 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { Suspense } from "react";
 import { Remark } from "react-remark";
 
-import { getHoroscopeForDay } from "@/actions/user/getHoroscopeForDay";
 import { TextSkeletonLoader } from "@/components/TextSkeletonLoader";
+import { api } from "@/lib/api";
 import { useHoroscopeStore } from "@/state/horoscopeStore";
+
+export function SuspenseHoroscopeContent() {
+    const horoscopeState = useHoroscopeStore();
+
+    const [content, getHoroscopeQuery] =
+        api.astrology.getHoroscopeForDay.useSuspenseQuery({
+            date: horoscopeState.dateSelected,
+        });
+
+    if (!content || getHoroscopeQuery.isError) {
+        return (
+            <p className="text-center text-gray-400">
+                No horoscope available for this date.
+            </p>
+        );
+    }
+
+    return (
+        <div className="prose prose-invert prose-sm w-full">
+            <Remark>{content}</Remark>
+        </div>
+    );
+}
 
 export function HoroscopeContent() {
     const horoscopeState = useHoroscopeStore();
 
-    const summaryQuery = useQuery({
-        queryKey: ["horoscopeSummary", horoscopeState.dateSelected],
-        queryFn: () => getHoroscopeForDay(horoscopeState.dateSelected),
-        networkMode: "offlineFirst",
-    });
-
     return (
         <div className="w-full max-w-2xl">
-            {summaryQuery.isLoading && (
-                <TextSkeletonLoader className="mx-auto w-full max-w-lg" />
-            )}
-
-            {!summaryQuery.isLoading && !summaryQuery.data && (
-                <p className="text-center text-gray-400">
-                    No horoscope available for this date.
-                </p>
-            )}
-
-            {summaryQuery.data && (
-                <div className="prose prose-invert prose-sm w-full">
-                    <Remark>{summaryQuery.data}</Remark>
-                </div>
-            )}
+            <Suspense fallback={<TextSkeletonLoader />}>
+                <SuspenseHoroscopeContent
+                    key={horoscopeState.dateSelected.toISOString()}
+                />
+            </Suspense>
         </div>
     );
 }

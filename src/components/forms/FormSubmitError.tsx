@@ -1,13 +1,18 @@
+import { TRPCClientErrorLike } from "@trpc/client";
 import clsx from "clsx";
 
-export function FormSubmitError({ error }: { error?: string | Error | null }) {
+export function FormSubmitError({
+    error,
+}: {
+    error?: string | Error | TRPCClientErrorLike<any> | null;
+}) {
     if (!error) {
         return null;
     }
 
     return (
         <p className={clsx("text-sm font-light text-red-500/80")}>
-            {error instanceof Error ? error.message : error}
+            {typeof error === "string" ? error : error.message}
         </p>
     );
 }
