@@ -36,17 +36,19 @@ export async function getHoroscopeForDay(date: Date) {
         return existingHoroscope.summary ?? null;
     }
 
-    const insertResult = await db
-        .insert(horoscopes)
-        .values({
-            userId: user.id,
-            type: "daily",
-            date,
-            summary:
-                "Your summary is still generating. Check back in about a minute. (You may need to refresh)",
-        })
-        .returning();
-    existingHoroscope = insertResult[0];
+    if (!existingHoroscope) {
+        const insertResult = await db
+            .insert(horoscopes)
+            .values({
+                userId: user.id,
+                type: "daily",
+                date,
+                summary:
+                    "Your summary is still generating. Check back in about a minute. (You may need to refresh)",
+            })
+            .returning();
+        existingHoroscope = insertResult[0];
+    }
 
     const transitChart = await getDailyTransits({
         birthDate: user.birthTimestamp!,
