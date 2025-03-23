@@ -27,7 +27,7 @@ export async function getHoroscopeForDay(date: Date) {
         }
     }
 
-    const existingHoroscope = await db.query.horoscopes.findFirst({
+    let existingHoroscope = await db.query.horoscopes.findFirst({
         where: (horoscopes, { eq, and }) =>
             and(eq(horoscopes.userId, user.id), eq(horoscopes.date, date)),
     });
@@ -35,6 +35,18 @@ export async function getHoroscopeForDay(date: Date) {
     if (existingHoroscope && existingHoroscope.summary) {
         return existingHoroscope.summary ?? null;
     }
+
+    const insertResult = await db
+        .insert(horoscopes)
+        .values({
+            userId: user.id,
+            type: "daily",
+            date,
+            summary:
+                "Your summary is still generating. Check back in about a minute. (You may need to refresh)",
+        })
+        .returning();
+    existingHoroscope = insertResult[0];
 
     const transitChart = await getDailyTransits({
         birthDate: user.birthTimestamp!,
@@ -52,21 +64,12 @@ export async function getHoroscopeForDay(date: Date) {
         temperature: 1.0,
     });
 
-    if (existingHoroscope) {
-        await db
-            .update(horoscopes)
-            .set({
-                summary,
-            })
-            .where(eq(horoscopes.id, existingHoroscope.id));
-    } else {
-        await db.insert(horoscopes).values({
-            userId: user.id,
-            type: "daily",
-            date,
+    await db
+        .update(horoscopes)
+        .set({
             summary,
-        });
-    }
+        })
+        .where(eq(horoscopes.id, existingHoroscope.id));
 
     return summary;
 }
