@@ -63,7 +63,8 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
 
             try {
                 await sendCodeMutation.mutateAsync(value);
-            } catch {
+            } catch (e) {
+                posthog.captureException(e);
                 return;
             }
 

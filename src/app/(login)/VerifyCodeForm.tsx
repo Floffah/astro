@@ -44,8 +44,8 @@ export function VerifyCodeForm() {
                     code: value.code,
                     email: loginState.email,
                 });
-            } catch {
-                posthog.capture(EventName.VERIFIED_EMAIL_FAILED);
+            } catch (e) {
+                posthog.captureException(e);
                 return;
             }
 

@@ -36,6 +36,7 @@
     "nanoid": "^5.1.5",
     "next": "^15.3.0-canary.20",
     "posthog-js": "^1.232.4",
+    "posthog-node": "^4.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-email": "^3.0.7",

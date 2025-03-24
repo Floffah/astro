@@ -1,7 +1,6 @@
 export enum EventName {
     LOGIN_EMAIL = "login_email",
     VERIFIED_EMAIL = "verified_email",
-    VERIFIED_EMAIL_FAILED = "verified_email_failed",
     LOGOUT = "logout",
 
     PROFILE_TAB_CHANGED = "profile_tab_changed",
