@@ -2,8 +2,10 @@
 
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 import { z } from "zod";
 
+import { EventName } from "@/lib/analytics/EventName";
 import { api } from "@/lib/api";
 import { useAppForm } from "@/lib/useAppForm";
 import { useLoginStore } from "@/state/loginStore";
@@ -15,6 +17,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function VerifyCodeForm() {
+    const trpc = api.useUtils();
+    const posthog = usePostHog();
     const router = useRouter();
 
     const loginState = useLoginStore();
@@ -41,8 +45,12 @@ export function VerifyCodeForm() {
                     email: loginState.email,
                 });
             } catch {
+                posthog.capture(EventName.VERIFIED_EMAIL_FAILED);
                 return;
             }
+
+            posthog.capture(EventName.VERIFIED_EMAIL);
+            await trpc.user.me.invalidate();
 
             if (result && !result.onboarded) {
                 router.push("/onboarding");

@@ -5,7 +5,7 @@ import { PropsWithChildren } from "react";
 import { populateMetadata } from "@/lib/populateMetadata";
 import { APIProvider } from "@/providers/APIProvider";
 import { DialogProvider } from "@/providers/DialogProvider";
-import { QueryClientProvider } from "@/providers/QueryClientProvider";
+import { PostHogProvider } from "@/providers/PostHog";
 
 import "./globals.css";
 
@@ -31,11 +31,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
             className={clsx(geistSans.variable, geistMono.variable)}
         >
             <body className="bg-gray-950 antialiased">
-                <QueryClientProvider>
-                    <APIProvider>
+                <APIProvider>
+                    <PostHogProvider>
                         <DialogProvider>{children}</DialogProvider>
-                    </APIProvider>
-                </QueryClientProvider>
+                    </PostHogProvider>
+                </APIProvider>
             </body>
         </html>
     );

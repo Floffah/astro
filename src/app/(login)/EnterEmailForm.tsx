@@ -4,10 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { parse } from "cookie";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 import { useEffect } from "react";
 import { z } from "zod";
 
 import { Loader } from "@/components/Loader";
+import { EventName } from "@/lib/analytics/EventName";
 import { api } from "@/lib/api";
 import { SESSION_TOKEN } from "@/lib/constants";
 import { useAppForm } from "@/lib/useAppForm";
@@ -21,6 +23,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
     const router = useRouter();
+    const posthog = usePostHog();
 
     const loginState = useLoginStore();
 
@@ -39,7 +42,9 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
         },
     });
 
-    const meQuery = api.user.me.useQuery();
+    const meQuery = api.user.me.useQuery(undefined, {
+        enabled: possiblyLoggedInQuery.data,
+    });
 
     const sendCodeMutation =
         api.authentication.getVerificationCode.useMutation();
@@ -62,6 +67,7 @@ export function EnterEmailForm({ onCodeSent }: { onCodeSent: () => void }) {
                 return;
             }
 
+            posthog.capture(EventName.LOGIN_EMAIL);
             loginState.setEmail(value.email);
 
             onCodeSent();

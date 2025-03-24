@@ -4,12 +4,15 @@ import clsx from "clsx";
 import { addDays } from "date-fns";
 import { LockKeyholeIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 
 import { Icon } from "@/components/Icon";
+import { EventName } from "@/lib/analytics/EventName";
 import { useDialogs } from "@/providers/DialogProvider";
 import { useHoroscopeStore } from "@/state/horoscopeStore";
 
 export function DateSelector({ isPremium }: { isPremium: boolean }) {
+    const posthog = usePostHog();
     const router = useRouter();
     const dialogs = useDialogs();
     const horoscopeState = useHoroscopeStore();
@@ -35,6 +38,8 @@ export function DateSelector({ isPremium }: { isPremium: boolean }) {
                         if (!isPremium && dayOffset !== 0) {
                             router.prefetch("/upgrade");
 
+                            posthog.capture(EventName.CLICKED_DATE_NOT_PREMIUM);
+
                             const doUpgrade = await dialogs.showConfirmation({
                                 title: "Upgrade to Premium",
                                 description:
@@ -44,11 +49,16 @@ export function DateSelector({ isPremium }: { isPremium: boolean }) {
                             });
 
                             if (doUpgrade) {
+                                posthog.capture(EventName.CLICKED_UPGRADE_LINK);
                                 router.push("/upgrade");
                             }
 
                             return;
                         }
+
+                        posthog.capture(EventName.HOROSCOPE_DATE_CHANGED, {
+                            date: addDays(new Date(), dayOffset).toISOString(),
+                        });
 
                         horoscopeState.setDateSelected(
                             addDays(new Date(), dayOffset),
