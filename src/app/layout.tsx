@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { JetBrains_Mono, Poppins } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { PropsWithChildren } from "react";
 
 import { populateMetadata } from "@/lib/populateMetadata";
@@ -9,13 +9,12 @@ import { PostHogProvider } from "@/providers/PostHog";
 
 import "./globals.css";
 
-const sansFont = Poppins({
+const sansFont = Geist({
     variable: "--app-font-sans",
     subsets: ["latin"],
-    weight: ["300", "400", "500", "600", "700"],
 });
 
-const monoFont = JetBrains_Mono({
+const monoFont = Geist_Mono({
     variable: "--app-font-mono",
     subsets: ["latin"],
 });
