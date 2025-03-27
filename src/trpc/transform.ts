@@ -6,11 +6,24 @@ export async function createTransformer(
     } = {},
 ) {
     return {
-        user: ({ publicId, ...user }: User) => ({
-            ...user,
-            id: publicId,
-            email: ctx.session?.userId === user.id ? user.email : null,
-        }),
+        user: ({ publicId, ...user }: User) => {
+            const meOnly = <T>(value: T) =>
+                ctx.session?.userId === user.id ? value : null;
+
+            return {
+                ...user,
+                id: publicId,
+                email: meOnly(user.email),
+                birthLatitude: meOnly(user.birthLatitude),
+                birthLongitude: meOnly(user.birthLongitude),
+                birthTimestamp: meOnly(user.birthTimestamp),
+                cachedNatalPlanetPositions: null,
+                summary: null,
+                sunSignSummary: null,
+                moonSignSummary: null,
+                ascendantSignSummary: null,
+            };
+        },
     };
 }
 

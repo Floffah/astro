@@ -62,7 +62,7 @@ export const createTRPCContext = async (opts: FetchCreateContextFnOptions) => {
         ...baseContext,
         session,
         user,
-        transfor: await createTransformer({
+        transform: await createTransformer({
             session,
         }),
     };
