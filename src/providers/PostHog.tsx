@@ -26,7 +26,7 @@ export function PostHogProvider({ children }: PropsWithChildren) {
     }, []);
 
     useEffect(() => {
-        if (meQuery.data) {
+        if (meQuery.data && !window.location.host.includes("localhost")) {
             posthog.identify(meQuery.data.id, {
                 email: meQuery.data.email,
             });

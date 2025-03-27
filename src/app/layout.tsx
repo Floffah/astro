@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Geist, Geist_Mono } from "next/font/google";
+import { JetBrains_Mono, Poppins } from "next/font/google";
 import { PropsWithChildren } from "react";
 
 import { populateMetadata } from "@/lib/populateMetadata";
@@ -9,13 +9,14 @@ import { PostHogProvider } from "@/providers/PostHog";
 
 import "./globals.css";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
+const sansFont = Poppins({
+    variable: "--app-font-sans",
     subsets: ["latin"],
+    weight: ["300", "400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
+const monoFont = JetBrains_Mono({
+    variable: "--app-font-mono",
     subsets: ["latin"],
 });
 
@@ -26,10 +27,7 @@ export const metadata = populateMetadata({
 
 export default function RootLayout({ children }: PropsWithChildren) {
     return (
-        <html
-            lang="en"
-            className={clsx(geistSans.variable, geistMono.variable)}
-        >
+        <html lang="en" className={clsx(sansFont.variable, monoFont.variable)}>
             <body className="bg-gray-950 antialiased">
                 <APIProvider>
                     <PostHogProvider>

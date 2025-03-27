@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     serverExternalPackages: [
         "@react-email/components",
         "@react-email/tailwind",
+        "resend",
     ],
     async rewrites() {
         return [

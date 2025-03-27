@@ -20,7 +20,7 @@ export const api = createTRPCNext<AppRouter>({
                 colorMode: "css",
             }),
             httpBatchLink({
-                url: "/api",
+                url: process.env.NEXT_PUBLIC_BASE_URL + "/api",
                 transformer: superjson,
             }),
         ],
