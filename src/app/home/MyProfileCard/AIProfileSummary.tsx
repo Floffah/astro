@@ -1,3 +1,4 @@
+import { withTracing } from "@posthog/ai";
 import { generateText } from "ai";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
@@ -5,6 +6,7 @@ import { useRemarkSync } from "react-remark";
 
 import { db, users } from "@/db";
 import { deepseek } from "@/lib/ai/deepseek";
+import getPostHogNodeClient from "@/lib/analytics/nodeClient";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 
 // TODO: refactor this to match the style of the other ai summary components
@@ -37,8 +39,15 @@ export async function AIProfileSummary() {
             })
             .where(eq(users.id, user.id));
 
+        const posthog = getPostHogNodeClient();
+
         const { text } = await generateText({
-            model: deepseek("deepseek-chat"),
+            model: withTracing(deepseek("deepseek-chat"), posthog, {
+                posthogDistinctId: user.publicId,
+                posthogProperties: {
+                    type: "user_summary",
+                },
+            }),
             system: "You are a tasked with analysing astrological information about a user. A natal planetary chart is provided in json format. Your job is to analyse this information and provide the user with a short summary, maximum 2 paragraphs, of what their astrological chart says about them. The user is interested in knowing about what their life will be like based on their chart. This could include personality, career, relationships, and *more* they may want to know. You should not mention specifically any part of astrology, like planets, but if you must say what you are referencing: just say something like 'your chart says this'. Your analysis should be based on everything however, its just your response to the user that should be simplified. Do not make anything up. All of your responses should be based on the information provided in the chart. You are able to use remark markdown if you wish, but keep it to a minimum (no headings).",
             prompt: JSON.stringify({
                 birthDate: user.birthTimestamp!.toISOString(),
@@ -49,6 +58,8 @@ export async function AIProfileSummary() {
         });
 
         summary = text;
+
+        await posthog.shutdown();
 
         await db
             .update(users)

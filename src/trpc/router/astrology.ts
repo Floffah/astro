@@ -1,3 +1,4 @@
+import { withTracing } from "@posthog/ai";
 import { TRPCError } from "@trpc/server";
 import { generateText } from "ai";
 import { eq } from "drizzle-orm";
@@ -11,6 +12,7 @@ import {
     getHoroscopeSummaryPrompt,
     getSignSummaryPrompt,
 } from "@/lib/ai/prompts";
+import getPostHogNodeClient from "@/lib/analytics/nodeClient";
 import { getDailyTransits } from "@/lib/astrology/getDailyTransits";
 import { UserError } from "@/lib/errors/UserError";
 import { authedProcedure, router } from "@/trpc/trpc";
@@ -64,11 +66,21 @@ export const astrologyRouter = router({
 
             const prompt = getSignSummaryPrompt(input.sign, ctx.user);
 
+            const posthog = getPostHogNodeClient();
+
             const { text } = await generateText({
-                model: deepseek("deepseek-chat"),
+                model: withTracing(deepseek("deepseek-chat"), posthog, {
+                    posthogDistinctId: ctx.user.publicId,
+                    posthogProperties: {
+                        type: "user_sign_summary",
+                        sign: input.sign,
+                    },
+                }),
                 ...prompt,
                 temperature: 1.0,
             });
+
+            await posthog.shutdown();
 
             const summaryUpdateValues: PgUpdateSetSource<typeof users> = {};
 
@@ -161,11 +173,21 @@ export const astrologyRouter = router({
                 transitChart,
             );
 
+            const posthog = getPostHogNodeClient();
+
             const { text: summary } = await generateText({
-                model: deepseek("deepseek-chat"),
+                model: withTracing(deepseek("deepseek-chat"), posthog, {
+                    posthogDistinctId: ctx.user.publicId,
+                    posthogProperties: {
+                        type: "user_horoscope",
+                        for_date: input.date.toISOString(),
+                    },
+                }),
                 ...prompt,
                 temperature: 1.0,
             });
+
+            await posthog.shutdown();
 
             await db
                 .update(horoscopes)
