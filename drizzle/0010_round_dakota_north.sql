@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "trial_available" boolean DEFAULT false;

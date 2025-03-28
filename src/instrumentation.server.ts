@@ -1,6 +1,6 @@
 import { Instrumentation } from "next";
 
-import getPostHogNodeClient from "@/lib/analytics/nodeClient";
+import { getPostHogNodeClient } from "@/lib/analytics/nodeClient";
 
 export const onRequestError: Instrumentation.onRequestError = async (
     err,

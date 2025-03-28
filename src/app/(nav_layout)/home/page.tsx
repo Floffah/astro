@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { HoroscopeTimeline } from "@/app/home/HoroscopeTimeline";
-import { HoroscopeTimelineLoader } from "@/app/home/HoroscopeTimeline/loader";
-import { MyProfileCard } from "@/app/home/MyProfileCard";
-import { NavBar } from "@/components/blocks/NavBar";
+import { HoroscopeTimeline } from "@/app/(nav_layout)/home/HoroscopeTimeline";
+import { HoroscopeTimelineLoader } from "@/app/(nav_layout)/home/HoroscopeTimeline/loader";
+import { MyProfileCard } from "@/app/(nav_layout)/home/MyProfileCard";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 
 export default async function HomePage() {
@@ -16,9 +15,7 @@ export default async function HomePage() {
     }
 
     return (
-        <div className="flex flex-col gap-4 p-4">
-            <NavBar />
-
+        <main className="flex flex-col gap-4 p-4">
             <Suspense
                 fallback={
                     <div className="h-36 w-full animate-pulse rounded-lg bg-gray-800" />
@@ -32,6 +29,6 @@ export default async function HomePage() {
                     <HoroscopeTimeline />
                 </Suspense>
             )}
-        </div>
+        </main>
     );
 }

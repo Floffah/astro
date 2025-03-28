@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { AIProfileSummary } from "@/app/home/MyProfileCard/AIProfileSummary";
-import { MyProfileTabs } from "@/app/home/MyProfileCard/MyProfileTabs";
+import { AIProfileSummary } from "@/app/(nav_layout)/home/MyProfileCard/AIProfileSummary";
+import { MyProfileTabs } from "@/app/(nav_layout)/home/MyProfileCard/MyProfileTabs";
 import { TextSkeletonLoader } from "@/components/TextSkeletonLoader";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 

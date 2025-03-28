@@ -7,4 +7,8 @@ export enum EventName {
     HOROSCOPE_DATE_CHANGED = "horoscope_date_changed",
     CLICKED_DATE_NOT_PREMIUM = "clicked_date_not_premium",
     CLICKED_UPGRADE_LINK = "clicked_upgrade_link",
+
+    SUBSCRIPTION_CREATED = "subscription_created",
+    SUBSCRIPTION_CANCELLED = "subscription_canceled",
+    SUBSCRIPTION_ENDED = "subscription_ended",
 }

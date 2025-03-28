@@ -29,6 +29,7 @@ export function PostHogProvider({ children }: PropsWithChildren) {
         if (meQuery.data && !window.location.host.includes("localhost")) {
             posthog.identify(meQuery.data.id, {
                 email: meQuery.data.email,
+                trial_available: meQuery.data.trialAvailable,
             });
         }
     }, [meQuery.data]);

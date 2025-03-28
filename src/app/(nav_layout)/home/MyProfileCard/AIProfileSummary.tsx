@@ -6,7 +6,7 @@ import { useRemarkSync } from "react-remark";
 
 import { db, users } from "@/db";
 import { deepseek } from "@/lib/ai/deepseek";
-import getPostHogNodeClient from "@/lib/analytics/nodeClient";
+import { getPostHogNodeClient } from "@/lib/analytics/nodeClient";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 
 // TODO: refactor this to match the style of the other ai summary components

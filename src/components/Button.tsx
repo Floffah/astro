@@ -2,7 +2,7 @@
 
 import { Slot } from "@radix-ui/react-slot";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     ComponentProps,
     ReactElement,
@@ -58,6 +58,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             asChild && typeof propsChildren !== "string" ? Slot : "button";
         const disabled = loading || propsDisabled;
 
+        const currentPathname = usePathname();
+
         useEffect(() => {
             setLoading(!!propsLoading);
         }, [propsLoading]);
@@ -67,6 +69,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 router.prefetch(link);
             }
         }, [link, router]);
+
+        useEffect(() => {
+            if (loading && link && currentPathname === link) {
+                setLoading(false);
+            }
+        }, [currentPathname, loading, link]);
 
         const children = (
             <>

@@ -1,5 +1,5 @@
-import { DateSelector } from "@/app/home/HoroscopeTimeline/DateSelector";
-import { HoroscopeContent } from "@/app/home/HoroscopeTimeline/HoroscopeContent";
+import { DateSelector } from "@/app/(nav_layout)/home/HoroscopeTimeline/DateSelector";
+import { HoroscopeContent } from "@/app/(nav_layout)/home/HoroscopeTimeline/HoroscopeContent";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 
 export async function HoroscopeTimeline() {

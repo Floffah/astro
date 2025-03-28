@@ -1,9 +1,11 @@
 import { PostHog } from "posthog-node";
+import { cache } from "react";
 
-export default function getPostHogNodeClient() {
-    return new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-        host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-        flushAt: 1,
-        flushInterval: 0,
-    });
-}
+export const getPostHogNodeClient = cache(
+    () =>
+        new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+            host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+            flushAt: 1,
+            flushInterval: 0,
+        }),
+);

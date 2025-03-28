@@ -9,6 +9,10 @@ export const onRequestError: Instrumentation.onRequestError = async (
     request,
     context,
 ) => {
+    if (process.env.NEXT_PUBLIC_BASE_URL!.includes("localhost")) {
+        return;
+    }
+
     if (
         process.env.NEXT_RUNTIME === "nodejs" ||
         process.env.NEXT_RUNTIME === "edge"

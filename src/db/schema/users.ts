@@ -20,6 +20,7 @@ export const users = pgTable("users", {
 
     onboarded: boolean("onboarded").default(false),
     premium: boolean("premium").default(false),
+    trialAvailable: boolean("trial_available").default(true),
 
     birthTimestamp: timestamp("birth_timestamp", {
         withTimezone: true,

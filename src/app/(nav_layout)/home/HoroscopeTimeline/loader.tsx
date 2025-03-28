@@ -1,4 +1,4 @@
-import { DateSelector } from "@/app/home/HoroscopeTimeline/DateSelector";
+import { DateSelector } from "@/app/(nav_layout)/home/HoroscopeTimeline/DateSelector";
 import { TextSkeletonLoader } from "@/components/TextSkeletonLoader";
 
 export function HoroscopeTimelineLoader() {

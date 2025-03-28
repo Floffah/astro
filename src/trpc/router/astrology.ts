@@ -12,7 +12,7 @@ import {
     getHoroscopeSummaryPrompt,
     getSignSummaryPrompt,
 } from "@/lib/ai/prompts";
-import getPostHogNodeClient from "@/lib/analytics/nodeClient";
+import { getPostHogNodeClient } from "@/lib/analytics/nodeClient";
 import { getDailyTransits } from "@/lib/astrology/getDailyTransits";
 import { UserError } from "@/lib/errors/UserError";
 import { authedProcedure, router } from "@/trpc/trpc";
