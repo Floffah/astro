@@ -59,8 +59,6 @@ export async function AIProfileSummary() {
 
         summary = text;
 
-        await posthog.shutdown();
-
         await db
             .update(users)
             .set({

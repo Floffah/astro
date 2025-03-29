@@ -1,6 +1,10 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
+import {
+    DayAtAGlance,
+    DayAtAGlanceFallback,
+} from "@/app/(nav_layout)/home/DayAtAGlance";
 import { HoroscopeTimeline } from "@/app/(nav_layout)/home/HoroscopeTimeline";
 import { HoroscopeTimelineLoader } from "@/app/(nav_layout)/home/HoroscopeTimeline/loader";
 import { MyProfileCard } from "@/app/(nav_layout)/home/MyProfileCard";
@@ -15,13 +19,17 @@ export default async function HomePage() {
     }
 
     return (
-        <main className="flex flex-col gap-4 p-4">
+        <main className="flex w-full flex-col items-center gap-4 p-4">
             <Suspense
                 fallback={
                     <div className="h-36 w-full animate-pulse rounded-lg bg-gray-800" />
                 }
             >
                 <MyProfileCard />
+            </Suspense>
+
+            <Suspense fallback={<DayAtAGlanceFallback />}>
+                <DayAtAGlance />
             </Suspense>
 
             {user && (

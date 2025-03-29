@@ -80,8 +80,6 @@ export const astrologyRouter = router({
                 temperature: 1.0,
             });
 
-            await posthog.shutdown();
-
             const summaryUpdateValues: PgUpdateSetSource<typeof users> = {};
 
             if (input.sign === "sun") {
@@ -187,8 +185,6 @@ export const astrologyRouter = router({
                 temperature: 1.0,
             });
 
-            await posthog.shutdown();
-
             await db
                 .update(horoscopes)
                 .set({
@@ -197,5 +193,30 @@ export const astrologyRouter = router({
                 .where(eq(horoscopes.id, existingHoroscope.id));
 
             return summary;
+        }),
+
+    hasHoroscopeForDate: authedProcedure
+        .input(
+            z.object({
+                date: z.date(),
+            }),
+        )
+        .query(async ({ ctx, input }) => {
+            if (!ctx.user || !ctx.user.onboarded) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: UserError.NOT_ONBOARDED,
+                });
+            }
+
+            const horoscope = await db.query.horoscopes.findFirst({
+                where: (horoscopes, { eq, and }) =>
+                    and(
+                        eq(horoscopes.userId, ctx.user.id),
+                        eq(horoscopes.date, input.date),
+                    ),
+            });
+
+            return !!horoscope;
         }),
 });

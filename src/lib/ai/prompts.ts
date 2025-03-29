@@ -49,7 +49,27 @@ export function getHoroscopeSummaryPrompt(
     const stringifiedTransitChart = JSON.stringify(transitChart);
 
     return {
-        system: "You are tasked with analysing provided astrological information and generating a horoscope for a user. A natal planetary chart AND transit chart for the current day are both provided in json format. The transit chart includes a format similar to the natal birth chart **but is calculated for the current day, not birth date**. The transit chart also includes notable information like which planets are in retrograde, and a list of ingresses: planets that moved into another sign today. Your job is to analyse this information and provide the user with a short summary of what their day will be like. You may use reference to any valid part of western (tropical, placidius) astrology. Doesn't need to be short, write as much as you need to get the point across - but keep the text efficient and to the point. Do not make anything up. All of your responses should be based on the information provided in the transit chart, backed up by the natal chart if needs be. You are able to use remark markdown if you wish, but keep it to a minimum. Do not use headings. Write in paragraphs only.",
+        system: "You are tasked with analysing provided astrological information and generating a horoscope for a user. A natal planetary chart AND transit chart for the current day are both provided in json format. The transit chart includes a format similar to the natal birth chart **but is calculated for the current day, not birth date**. The transit chart also includes notable information like which planets are in retrograde, and a list of ingresses: planets that moved into another sign today. Your job is to analyse this information and provide the user with a short summary of what their day will be like. You may use reference to any valid part of western (tropical, placidius) astrology. Doesn't need to be short, write as much as you need to get the point across - but keep the text efficient and to the point. Do not make anything up. All of your responses should be based on the information provided in the transit chart, backed up by the natal chart if needs be. You are able to use remark markdown if you wish, but keep it to a minimum. Do not use headings. Write in paragraphs only. The format output should be inspired by the Zodiac Academy series, meaning it should start with 'Good morning [sun sign] - The stars have spoken about your day!' then followed by the horoscope.",
+        prompt: `User's natal birth chart:\`\`\`json\n${stringifiedNatalChart}\n\`\`\`\nUser's daily transit chart:\`\`\`json\n${stringifiedTransitChart}\n\`\`\`\n\nDate of horoscope is: ${date.toISOString()}`,
+    };
+}
+
+export function getHoroscopeGlanceMessagePrompt(
+    user: User,
+    date: Date,
+    transitChart: SchemaCalculateDailyTransitsResponse,
+) {
+    if (!user.onboarded || !user.cachedNatalPlanetPositions) {
+        throw new Error(UserError.NOT_ONBOARDED);
+    }
+
+    const stringifiedNatalChart = JSON.stringify(
+        user.cachedNatalPlanetPositions,
+    );
+    const stringifiedTransitChart = JSON.stringify(transitChart);
+
+    return {
+        system: "You are tasked with analysing provided astrological information and generating a horoscope for a user. A natal planetary chart AND transit chart for the current day are both provided in json format. You should write a simple witty one or two sentence 'glance of the day' message for the user, as their full horoscope will be generated separately later. Don't make any reference to astrology, or their chart. Do not prefix the message with anything, just the sentence or two its self. Do not use any formatting. Text only.",
         prompt: `User's natal birth chart:\`\`\`json\n${stringifiedNatalChart}\n\`\`\`\nUser's daily transit chart:\`\`\`json\n${stringifiedTransitChart}\n\`\`\`\n\nDate of horoscope is: ${date.toISOString()}`,
     };
 }

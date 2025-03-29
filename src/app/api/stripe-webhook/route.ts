@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { NextRequest, NextResponse, after } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
 import { db, users } from "@/db";
@@ -11,10 +11,6 @@ export const POST = async (req: NextRequest) => {
     const posthog = getPostHogNodeClient();
     const body = await req.bytes();
     const signature = req.headers.get("Stripe-Signature");
-
-    after(async () => {
-        await posthog.shutdown();
-    });
 
     const stripe = getStripe();
 

@@ -38,6 +38,11 @@ export const users = pgTable("users", {
     moonSignSummary: text("moon_sign_summary"),
     ascendantSignSummary: text("ascendant_sign_summary"),
 
+    dayAtAGlance: text("day_at_a_glance"),
+    glanceGeneratedAt: timestamp("glance_generated_at", {
+        withTimezone: true,
+    }),
+
     createdAt: createdAt(),
     updatedAt: updatedAt(),
 });
