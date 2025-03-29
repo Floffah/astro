@@ -29,16 +29,18 @@ export default async function HomePage() {
                 <MyProfileCard />
             </Suspense>
 
-            <Suspense fallback={<DayAtAGlanceFallback />}>
-                <DayAtAGlance />
-            </Suspense>
-
-            <Divider className="max-w-2xl" />
-
             {user && (
-                <Suspense fallback={<HoroscopeTimelineLoader />}>
-                    <HoroscopeTimeline />
-                </Suspense>
+                <>
+                    <Suspense fallback={<DayAtAGlanceFallback />}>
+                        <DayAtAGlance />
+                    </Suspense>
+
+                    <Divider className="max-w-2xl" />
+
+                    <Suspense fallback={<HoroscopeTimelineLoader />}>
+                        <HoroscopeTimeline />
+                    </Suspense>
+                </>
             )}
         </main>
     );
