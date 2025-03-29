@@ -120,7 +120,7 @@ export const authenticationRouter = router({
                 value: token,
                 maxAge: 60 * 60 * 24 * 30,
                 expires: expiresAt,
-                secure: true,
+                secure: process.env.NODE_ENV === "production",
             });
 
             after(async () => {

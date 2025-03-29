@@ -1,4 +1,4 @@
-import { httpBatchStreamLink, loggerLink } from "@trpc/client";
+import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { ssrPrepass } from "@trpc/next/ssrPrepass";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
@@ -19,7 +19,7 @@ export const api = createTRPCNext<AppRouter>({
                     (opts.direction === "down" && opts.result instanceof Error),
                 colorMode: "css",
             }),
-            httpBatchStreamLink({
+            httpBatchLink({
                 url: process.env.NEXT_PUBLIC_BASE_URL + "/api",
                 transformer: superjson,
             }),

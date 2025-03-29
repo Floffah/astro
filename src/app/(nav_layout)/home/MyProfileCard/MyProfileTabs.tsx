@@ -27,7 +27,7 @@ export function MyProfileTabs({
     return (
         <Tabs.Root
             defaultValue="overview"
-            className="flex flex-col gap-4 rounded-lg bg-gray-800 p-4 sm:flex-row"
+            className="flex w-full flex-col gap-4 rounded-lg bg-gray-800 p-4 sm:flex-row"
             onValueChange={(tab) => {
                 posthog.capture(EventName.PROFILE_TAB_CHANGED, {
                     tab,

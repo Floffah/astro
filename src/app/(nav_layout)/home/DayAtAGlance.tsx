@@ -2,7 +2,7 @@ import { withTracing } from "@posthog/ai";
 import { generateText } from "ai";
 import { eq } from "drizzle-orm";
 
-import { Divider } from "@/components/Divider";
+import { TextSkeletonLoader } from "@/components/TextSkeletonLoader";
 import { db, users } from "@/db";
 import { deepseek } from "@/lib/ai/deepseek";
 import { getHoroscopeGlanceMessagePrompt } from "@/lib/ai/prompts";
@@ -12,9 +12,14 @@ import { getSessionFromRuntime } from "@/lib/data/getSession";
 
 export function DayAtAGlanceFallback() {
     return (
-        <h2 className="text-center text-xl font-semibold text-white">
-            Your Horoscope
-        </h2>
+        <div className="flex w-full max-w-xl flex-col gap-2 py-8">
+            <p className="text-center text-xl font-semibold text-white">
+                {Intl.DateTimeFormat("en-GB", {
+                    dateStyle: "medium",
+                }).format(new Date())}
+            </p>
+            <TextSkeletonLoader />
+        </div>
     );
 }
 
@@ -44,20 +49,16 @@ export async function DayAtAGlance() {
         user.glanceGeneratedAt?.getFullYear() === todaysDate.getFullYear()
     ) {
         return (
-            <>
-                <div className="flex max-w-xl flex-col py-8">
-                    <p className="text-center text-xl font-semibold text-white">
-                        {Intl.DateTimeFormat("en-GB", {
-                            dateStyle: "medium",
-                        }).format(todaysDate)}
-                    </p>
-                    <p className="text-center text-base text-gray-300">
-                        {user.dayAtAGlance}
-                    </p>
-                </div>
-
-                <Divider className="max-w-2xl" />
-            </>
+            <div className="flex max-w-xl flex-col py-8">
+                <p className="text-center text-xl font-semibold text-white">
+                    {Intl.DateTimeFormat("en-GB", {
+                        dateStyle: "medium",
+                    }).format(todaysDate)}
+                </p>
+                <p className="text-center text-base text-gray-300">
+                    {user.dayAtAGlance}
+                </p>
+            </div>
         );
     }
 
@@ -99,17 +100,13 @@ export async function DayAtAGlance() {
         .where(eq(users.id, user.id));
 
     return (
-        <>
-            <div className="flex max-w-xl flex-col py-8">
-                <p className="text-center text-xl font-semibold text-white">
-                    {Intl.DateTimeFormat("en-GB", {
-                        dateStyle: "medium",
-                    }).format(todaysDate)}
-                </p>
-                <p className="text-center text-base text-gray-300">{summary}</p>
-            </div>
-
-            <Divider className="max-w-2xl" />
-        </>
+        <div className="flex max-w-xl flex-col py-8">
+            <p className="text-center text-xl font-semibold text-white">
+                {Intl.DateTimeFormat("en-GB", {
+                    dateStyle: "medium",
+                }).format(todaysDate)}
+            </p>
+            <p className="text-center text-base text-gray-300">{summary}</p>
+        </div>
     );
 }

@@ -8,6 +8,7 @@ import {
 import { HoroscopeTimeline } from "@/app/(nav_layout)/home/HoroscopeTimeline";
 import { HoroscopeTimelineLoader } from "@/app/(nav_layout)/home/HoroscopeTimeline/loader";
 import { MyProfileCard } from "@/app/(nav_layout)/home/MyProfileCard";
+import { Divider } from "@/components/Divider";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 
 export default async function HomePage() {
@@ -31,6 +32,8 @@ export default async function HomePage() {
             <Suspense fallback={<DayAtAGlanceFallback />}>
                 <DayAtAGlance />
             </Suspense>
+
+            <Divider className="max-w-2xl" />
 
             {user && (
                 <Suspense fallback={<HoroscopeTimelineLoader />}>
