@@ -9,7 +9,7 @@ import { Button } from "@/components/Button";
 function DismissButton() {
     const router = useRouter();
 
-    const [secondsLeft, setSecondsLeft] = useState(10);
+    const [secondsLeft, setSecondsLeft] = useState(5);
 
     useEffect(() => {
         router.prefetch("/home");

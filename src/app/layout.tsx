@@ -19,10 +19,24 @@ const monoFont = Geist_Mono({
     subsets: ["latin"],
 });
 
-export const metadata = populateMetadata({
-    title: "Astrofloff",
-    description: "Zodiac Academy inspired Astrology App",
-});
+export const metadata = populateMetadata(
+    {
+        title: "Orbithm",
+        description: "Get a simple personalised overview of you and your day",
+    },
+    {
+        keywords: [
+            "orbithm",
+            "horoscope",
+            "astrology",
+            "zodiac",
+            "personalised",
+            "AI",
+            "simple",
+            "beginners",
+        ],
+    },
+);
 
 export default function RootLayout({ children }: PropsWithChildren) {
     return (

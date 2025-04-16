@@ -92,6 +92,20 @@
       "when": 1743248823305,
       "tag": "0012_icy_madelyne_pryor",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1744832565684,
+      "tag": "0013_silky_hellfire_club",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1744833418471,
+      "tag": "0014_slimy_namor",
+      "breakpoints": true
     }
   ]
 }

@@ -69,13 +69,19 @@ export const astrologyRouter = router({
             const posthog = getPostHogNodeClient();
 
             const { text } = await generateText({
-                model: withTracing(deepseek("deepseek-chat"), posthog, {
-                    posthogDistinctId: ctx.user.publicId,
-                    posthogProperties: {
-                        type: "user_sign_summary",
-                        sign: input.sign,
+                model: withTracing(
+                    deepseek("deepseek-chat", {
+                        user: ctx.user.publicId,
+                    }),
+                    posthog,
+                    {
+                        posthogDistinctId: ctx.user.publicId,
+                        posthogProperties: {
+                            type: "user_sign_summary",
+                            sign: input.sign,
+                        },
                     },
-                }),
+                ),
                 ...prompt,
                 temperature: 1.0,
             });
@@ -174,13 +180,19 @@ export const astrologyRouter = router({
             const posthog = getPostHogNodeClient();
 
             const { text: summary } = await generateText({
-                model: withTracing(deepseek("deepseek-chat"), posthog, {
-                    posthogDistinctId: ctx.user.publicId,
-                    posthogProperties: {
-                        type: "user_horoscope",
-                        for_date: input.date.toISOString(),
+                model: withTracing(
+                    deepseek("deepseek-chat", {
+                        user: ctx.user.publicId,
+                    }),
+                    posthog,
+                    {
+                        posthogDistinctId: ctx.user.publicId,
+                        posthogProperties: {
+                            type: "user_horoscope",
+                            for_date: input.date.toISOString(),
+                        },
                     },
-                }),
+                ),
                 ...prompt,
                 temperature: 1.0,
             });

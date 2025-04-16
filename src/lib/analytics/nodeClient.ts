@@ -9,9 +9,11 @@ export const getPostHogNodeClient = cache(() => {
         flushInterval: 0,
     });
 
-    after(async () => {
-        await posthog.shutdown();
-    });
+    try {
+        after(async () => {
+            await posthog.shutdown();
+        });
+    } catch {}
 
     return posthog;
 });

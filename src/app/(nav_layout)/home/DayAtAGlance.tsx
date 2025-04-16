@@ -32,16 +32,6 @@ export async function DayAtAGlance() {
 
     const todaysDate = new Date();
 
-    console.log(
-        user.dayAtAGlance,
-        user.glanceGeneratedAt?.getDate(),
-        todaysDate.getDate(),
-        user.glanceGeneratedAt?.getMonth(),
-        todaysDate.getMonth(),
-        user.glanceGeneratedAt?.getFullYear(),
-        todaysDate.getFullYear(),
-    );
-
     if (
         user.dayAtAGlance &&
         user.glanceGeneratedAt?.getDate() === todaysDate.getDate() &&
@@ -80,13 +70,19 @@ export async function DayAtAGlance() {
     const posthog = getPostHogNodeClient();
 
     const { text: summary } = await generateText({
-        model: withTracing(deepseek("deepseek-chat"), posthog, {
-            posthogDistinctId: user.publicId,
-            posthogProperties: {
-                type: "user_horoscope_glance",
-                for_date: todaysDate,
+        model: withTracing(
+            deepseek("deepseek-chat", {
+                user: user.publicId,
+            }),
+            posthog,
+            {
+                posthogDistinctId: user.publicId,
+                posthogProperties: {
+                    type: "user_horoscope_glance",
+                    for_date: todaysDate,
+                },
             },
-        }),
+        ),
         ...prompt,
         temperature: 1.0,
     });

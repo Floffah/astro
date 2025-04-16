@@ -34,8 +34,32 @@ export interface paths {
         /**
          * Calculate daily transits
          * @description This endpoint calculates the transits for a given day at a given location. Useful for generating horoscopes.
+         *
+         *     If birth date is omitted you just get a chart for the current day along with ingresses and retrogrades, but no comparative aspects.
          */
         get: operations["calculateDailyTransits"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/generic-chart": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Calculate a generic transit chart
+         * @description This endpoint calculates the transits for a given date but does not require a location or birth data.
+         *
+         *     **Do not use this for personalised horoscopes**
+         */
+        get: operations["calculateGenericTransitChart"];
         put?: never;
         post?: never;
         delete?: never;
@@ -95,16 +119,18 @@ export interface components {
         PlanetId: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 15 | 100 | 103 | 104 | 105 | 107 | 108 | 109;
         /** @enum {string} */
         Planet: "Sun" | "Moon" | "Mercury" | "Venus" | "Mars" | "Jupiter" | "Saturn" | "Uranus" | "Neptune" | "Pluto" | "Chiron" | "Ascendant" | "True North Node" | "True South Node" | "Lilith" | "Nadir" | "Descendant" | "MidHeaven";
-        PlanetPositionObject: {
+        GenericPlanetPositionObject: {
             id: components["schemas"]["PlanetId"];
             name: components["schemas"]["Planet"];
             longitude: number;
             latitude?: number;
             isRetrograde: boolean;
             degree: number;
-            houseNumber: number;
             zodiac: components["schemas"]["ZodiacDetailsObject"];
         };
+        PlanetPositionObject: {
+            houseNumber: number;
+        } & components["schemas"]["GenericPlanetPositionObject"];
         AspectObject: {
             planet1: {
                 id: components["schemas"]["PlanetId"];
@@ -121,11 +147,12 @@ export interface components {
                 name: components["schemas"]["Aspect"];
             };
             orb: number;
-            /** @enum {string} */
-            typeOfAspect: "transit-to-natal" | "natal-to-natal" | "transit-to-transit";
+            typeOfAspect: components["schemas"]["TypeOfAspect"];
         };
         /** @enum {string} */
         Aspect: "Conjunction" | "Opposition" | "Square" | "Semi Square" | "Sesquiquadrate" | "Trine" | "Sextile" | "Semi Sextile" | "Quincunx" | "Quintile" | "Bi Quintile" | "Parallel" | "Contraparallel";
+        /** @enum {string} */
+        TypeOfAspect: "transit-to-natal" | "natal-to-natal" | "transit-to-transit";
         /** @description An error response. Note that 'error' can be a string, or a ZodError object. */
         ErrorResponse: {
             /** @constant */
@@ -140,7 +167,7 @@ export interface components {
         };
         CalculateDailyTransitsResponse: {
             transitChart: components["schemas"]["CalculateBirthChartResponse"];
-            transitNatalAspects: components["schemas"]["AspectObject"][];
+            transitNatalAspects: components["schemas"]["AspectObject"][] | null;
             notableEvents: {
                 retrogradePlanets: components["schemas"]["Planet"][];
                 ingresses: components["schemas"]["IngressObject"][];
@@ -149,6 +176,22 @@ export interface components {
         IngressObject: {
             planet: components["schemas"]["Planet"];
             enteredSign: components["schemas"]["ZodiacSign"];
+        };
+        CalculateGenericTransitChartResponse: {
+            chart: components["schemas"]["CalculateGenericChartResponse"];
+            notableEvents: {
+                retrogradePlanets: components["schemas"]["Planet"][];
+                ingresses: components["schemas"]["IngressObject"][];
+            };
+        };
+        CalculateGenericChartResponse: {
+            signs: {
+                sun: components["schemas"]["ZodiacSignObject"];
+                moon: components["schemas"]["ZodiacMoonSignObject"];
+            };
+            planets: components["schemas"]["GenericPlanetPositionObject"][];
+            aspects: components["schemas"]["AspectObject"][];
+            declinations: components["schemas"]["AspectObject"][];
         };
     };
     responses: never;
@@ -167,12 +210,16 @@ export type SchemaZodiacPositionObject = components['schemas']['ZodiacPositionOb
 export type SchemaZodiacDetailsObject = components['schemas']['ZodiacDetailsObject'];
 export type SchemaPlanetId = components['schemas']['PlanetId'];
 export type SchemaPlanet = components['schemas']['Planet'];
+export type SchemaGenericPlanetPositionObject = components['schemas']['GenericPlanetPositionObject'];
 export type SchemaPlanetPositionObject = components['schemas']['PlanetPositionObject'];
 export type SchemaAspectObject = components['schemas']['AspectObject'];
 export type SchemaAspect = components['schemas']['Aspect'];
+export type SchemaTypeOfAspect = components['schemas']['TypeOfAspect'];
 export type SchemaErrorResponse = components['schemas']['ErrorResponse'];
 export type SchemaCalculateDailyTransitsResponse = components['schemas']['CalculateDailyTransitsResponse'];
 export type SchemaIngressObject = components['schemas']['IngressObject'];
+export type SchemaCalculateGenericTransitChartResponse = components['schemas']['CalculateGenericTransitChartResponse'];
+export type SchemaCalculateGenericChartResponse = components['schemas']['CalculateGenericChartResponse'];
 export type $defs = Record<string, never>;
 export interface operations {
     calculateBirthChart: {
@@ -218,13 +265,13 @@ export interface operations {
     calculateDailyTransits: {
         parameters: {
             query: {
-                birthYear: number;
-                birthMonth: number;
-                birthDay: number;
+                birthYear?: number;
+                birthMonth?: number;
+                birthDay?: number;
                 birthMinute?: number;
                 birthHour?: number;
-                birthLatitude: number;
-                birthLongitude: number;
+                birthLatitude?: number;
+                birthLongitude?: number;
                 transitYear?: number;
                 transitMonth?: number;
                 transitDay?: number;
@@ -246,6 +293,44 @@ export interface operations {
                     "application/json": {
                         success: boolean;
                         data: components["schemas"]["CalculateDailyTransitsResponse"];
+                    };
+                };
+            };
+            /** @description User Error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    calculateGenericTransitChart: {
+        parameters: {
+            query: {
+                year: number;
+                month: number;
+                day: number;
+                hour?: number;
+                minute?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        data: components["schemas"]["CalculateGenericTransitChartResponse"];
                     };
                 };
             };
