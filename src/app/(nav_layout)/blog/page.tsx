@@ -102,7 +102,7 @@ export default async function BlogPage() {
                                     <p className="text-gray-300">•</p>
                                     <p className="text-xs text-gray-300">
                                         {new Date(
-                                            bannerArticle.createdAt,
+                                            article.createdAt,
                                         ).toLocaleDateString("en-GB", {
                                             month: "long",
                                             day: "numeric",

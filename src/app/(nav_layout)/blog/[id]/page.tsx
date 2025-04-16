@@ -95,6 +95,9 @@ export default async function BlogPostPage({
                         className="h-7 w-7 rounded-full"
                     />
                     <p className="text-sm text-gray-300">by Lumyn</p>
+                    <p className="rounded bg-blue-700 px-1 text-xs text-gray-200">
+                        AI
+                    </p>
                 </div>
                 <p className="text-gray-300">•</p>
                 <p className="text-sm text-gray-300">
