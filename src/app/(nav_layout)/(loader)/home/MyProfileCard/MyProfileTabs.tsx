@@ -11,7 +11,7 @@ import { usePostHog } from "posthog-js/react";
 import { PropsWithChildren, Suspense } from "react";
 import { SchemaCalculateBirthChartResponse } from "~types/apis/astrocalc";
 
-import { SignSummary } from "@/app/(nav_layout)/home/MyProfileCard/SignSummary";
+import { SignSummary } from "@/app/(nav_layout)/(loader)/home/MyProfileCard/SignSummary";
 import { Icon } from "@/components/Icon";
 import { TextSkeletonLoader } from "@/components/TextSkeletonLoader";
 import { EventName } from "@/lib/analytics/EventName";

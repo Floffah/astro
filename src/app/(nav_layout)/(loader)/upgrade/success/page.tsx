@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { openBillingPortal } from "@/app/(nav_layout)/upgrade/actions";
+import { openBillingPortal } from "@/app/(nav_layout)/(loader)/upgrade/actions";
 import { Button } from "@/components/Button";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 import { getStripe } from "@/lib/stripe";

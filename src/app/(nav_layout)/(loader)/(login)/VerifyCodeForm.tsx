@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { usePostHog } from "posthog-js/react";
 import { z } from "zod";
 
+import { Button } from "@/components/Button";
 import { EventName } from "@/lib/analytics/EventName";
 import { api } from "@/lib/api";
 import { useAppForm } from "@/lib/useAppForm";
@@ -70,6 +71,10 @@ export function VerifyCodeForm() {
                 translateX: 0,
                 opacity: 1,
             }}
+            exit={{
+                translateX: 20,
+                opacity: 0,
+            }}
             className="flex flex-col gap-2"
             onSubmit={(e) => {
                 e.preventDefault();
@@ -81,17 +86,33 @@ export function VerifyCodeForm() {
                     name="code"
                     children={(field) => (
                         <field.Input
-                            description="Enter the code you were sent"
+                            description={`A code was sent to ${loginState.email}`}
                             label="Code"
                             placeholder="123456"
                         />
                     )}
                 />
 
-                <form.SubscribeButton color="primary" size="sm">
-                    Login
-                </form.SubscribeButton>
-
+                <div className="flex items-center gap-2">
+                    <Button
+                        color="secondary"
+                        size="sm"
+                        className="flex-1"
+                        type="button"
+                        onClick={() => {
+                            loginState.setCodeSent(false);
+                        }}
+                    >
+                        Back
+                    </Button>
+                    <form.SubscribeButton
+                        color="primary"
+                        size="sm"
+                        className="flex-1"
+                    >
+                        Login
+                    </form.SubscribeButton>
+                </div>
                 <form.SubmitError error={verifyCodeMutation.error} />
             </form.AppForm>
         </motion.form>

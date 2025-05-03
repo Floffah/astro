@@ -6,7 +6,7 @@ import {
     redirectToStripeMonthly,
     redirectToStripeYearly,
     redirectToStripeYearlyWithTrial,
-} from "@/app/(nav_layout)/upgrade/actions";
+} from "@/app/(nav_layout)/(loader)/upgrade/actions";
 import { Button } from "@/components/Button";
 import { PoweredByStripe } from "@/components/blocks/PoweredByStripe";
 import { FeatureFlag } from "@/lib/analytics/FeatureFlag";
@@ -64,7 +64,7 @@ export default async function UpgradePage() {
                 </ul>
 
                 <Button size="md" color="primary" asChild>
-                    <Link href="/">Go home</Link>
+                    <Link href="/public">Go home</Link>
                 </Button>
             </main>
         );

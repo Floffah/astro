@@ -1,18 +1,16 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
 
-import { EnterEmailForm } from "@/app/(login)/EnterEmailForm";
-import { VerifyCodeForm } from "@/app/(login)/VerifyCodeForm";
+import { EnterEmailForm } from "@/app/(nav_layout)/(loader)/(login)/EnterEmailForm";
+import { VerifyCodeForm } from "@/app/(nav_layout)/(loader)/(login)/VerifyCodeForm";
 import { useLoginStore } from "@/state/loginStore";
 
 export default function LoginPage() {
     const loginState = useLoginStore();
-    const [exitComplete, setExitComplete] = useState(false);
 
     return (
-        <div className="flex h-screen items-center justify-center">
+        <div className="flex flex-grow items-center justify-center">
             <motion.main
                 animate={{
                     scale: 1,
@@ -26,15 +24,18 @@ export default function LoginPage() {
             >
                 <h1 className="text-xl font-semibold text-white">Login</h1>
 
-                <AnimatePresence onExitComplete={() => setExitComplete(true)}>
+                <AnimatePresence mode="wait">
                     {!loginState.codeSent && (
                         <EnterEmailForm
                             onCodeSent={() => loginState.setCodeSent(true)}
+                            key="enter-email-form"
                         />
                     )}
-                </AnimatePresence>
 
-                {loginState.codeSent && exitComplete && <VerifyCodeForm />}
+                    {loginState.codeSent && (
+                        <VerifyCodeForm key="verify-email-form" />
+                    )}
+                </AnimatePresence>
             </motion.main>
         </div>
     );

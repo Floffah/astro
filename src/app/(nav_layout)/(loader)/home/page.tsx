@@ -4,10 +4,10 @@ import { Suspense } from "react";
 import {
     DayAtAGlance,
     DayAtAGlanceFallback,
-} from "@/app/(nav_layout)/home/DayAtAGlance";
-import { HoroscopeTimeline } from "@/app/(nav_layout)/home/HoroscopeTimeline";
-import { HoroscopeTimelineLoader } from "@/app/(nav_layout)/home/HoroscopeTimeline/loader";
-import { MyProfileCard } from "@/app/(nav_layout)/home/MyProfileCard";
+} from "@/app/(nav_layout)/(loader)/home/DayAtAGlance";
+import { HoroscopeTimeline } from "@/app/(nav_layout)/(loader)/home/HoroscopeTimeline";
+import { HoroscopeTimelineLoader } from "@/app/(nav_layout)/(loader)/home/HoroscopeTimeline/loader";
+import { MyProfileCard } from "@/app/(nav_layout)/(loader)/home/MyProfileCard";
 import { Divider } from "@/components/Divider";
 import { getSessionFromRuntime } from "@/lib/data/getSession";
 

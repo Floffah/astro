@@ -17,7 +17,7 @@ export function NavBar() {
                 />
 
                 <Link href="/home" className="text-xl font-bold text-white">
-                    My Atlas
+                    Orbithm
                 </Link>
             </div>
 
