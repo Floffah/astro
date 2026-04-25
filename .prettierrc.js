@@ -9,8 +9,8 @@ module.exports = {
     endOfLine: "lf",
     embeddedLanguageFormatting: "auto",
 
-    tailwindConfig: "./tailwind.config.ts",
-    tailwindFunctions: ["clsx"],
+    tailwindStylesheet: "./src/app/globals.css",
+    tailwindFunctions: ["clsx", "cn", "cva"],
 
     importOrder: ["<THIRD_PARTY_MODULES>", "@/(.*)$", "\\./(.*)$"],
     importOrderSeparation: true,
