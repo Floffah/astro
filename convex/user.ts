@@ -22,7 +22,6 @@ export const upsertFromClerk = internalMutation({
             name: data.username!,
             clerkId: data.id,
             imageUrl: data.image_url,
-            onboarded: true,
         };
 
         if (user === null) {

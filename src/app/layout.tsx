@@ -6,6 +6,7 @@ import { JetBrains_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
 import { PropsWithChildren } from "react";
 
 import ConvexClientProvider from "@/components/providers/ConvexClientProvider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 import "./globals.css";
@@ -57,7 +58,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
                             disableTransitionOnChange
                             enableColorScheme
                         >
-                            {children}
+                            <TooltipProvider>{children}</TooltipProvider>
                         </ThemeProvider>
                     </ConvexClientProvider>
                 </ClerkProvider>
