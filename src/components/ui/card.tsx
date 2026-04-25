@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Slot } from "radix-ui";
 
 import { cn } from "@/lib/utils";
 
@@ -72,9 +73,15 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
     );
 }
 
-function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+function CardContent({
+    className,
+    asChild,
+    ...props
+}: React.ComponentProps<"div"> & { asChild?: boolean }) {
+    const Component = asChild ? Slot.Root : "div";
+
     return (
-        <div
+        <Component
             data-slot="card-content"
             className={cn("px-8 group-data-[size=sm]/card:px-5", className)}
             {...props}

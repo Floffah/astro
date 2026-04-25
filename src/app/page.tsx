@@ -2,43 +2,19 @@ import { SignInButton } from "@clerk/nextjs";
 import {
     ArrowRightIcon,
     ChartNoAxesCombined,
-    Moon,
     MoonIcon,
     SparklesIcon,
 } from "lucide-react";
-import Image from "next/image";
 
+import Navbar from "@/components/blocks/Navbar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-
-import siteIcon from "./icon.png";
 
 export default function Home() {
     return (
         <main className="min-h-svh overflow-hidden bg-background text-foreground">
             <div className="mx-auto flex min-h-svh w-full max-w-6xl flex-col px-5 py-5 sm:px-8 lg:px-10">
-                <header className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <Image
-                            src={siteIcon}
-                            alt=""
-                            className="size-9 rounded-full object-contain"
-                            priority
-                        />
-                        <p className="flex items-start gap-1 font-serif text-lg">
-                            <span className="leading-4">Astro</span>
-                            <span className="self-end font-serif text-sm font-semibold text-muted-foreground">
-                                by Floffah
-                            </span>
-                        </p>
-                    </div>
-
-                    <SignInButton mode="modal">
-                        <Button variant="outline" size="sm">
-                            Sign in
-                        </Button>
-                    </SignInButton>
-                </header>
+                <Navbar />
 
                 <section className="grid flex-1 items-center gap-12 py-16 lg:grid-cols-[minmax(0,1fr)_380px] lg:py-10">
                     <div className="max-w-3xl">

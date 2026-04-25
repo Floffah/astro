@@ -14,12 +14,21 @@ export const currentUser = query({
     },
 });
 
+export const internalGetCurrentUser = internalMutation({
+    args: {},
+    handler: async (ctx) => {
+        const user = await getCurrentUser(ctx);
+        if (!user) return null;
+        return user;
+    },
+});
+
 export const upsertFromClerk = internalMutation({
     args: { data: v.any() as Validator<UserJSON> }, // no runtime validation, trust Clerk
     async handler(ctx, { data }) {
         const user = await userByClerkId(ctx, data.id);
         const newUserDoc = {
-            name: data.username!,
+            name: data.username! ?? undefined,
             clerkId: data.id,
             imageUrl: data.image_url,
         };
