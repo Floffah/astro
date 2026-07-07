@@ -9,9 +9,14 @@
  */
 
 import type * as http from "../http.js";
+import type * as lib_ai from "../lib/ai.js";
 import type * as lib_auth from "../lib/auth.js";
+import type * as lib_weeklyReadingShared from "../lib/weeklyReadingShared.js";
+import type * as lib_workpools from "../lib/workpools.js";
 import type * as onboarding from "../onboarding.js";
 import type * as user from "../user.js";
+import type * as weeklyReadingGeneration from "../weeklyReadingGeneration.js";
+import type * as weeklyReadings from "../weeklyReadings.js";
 
 import type {
   ApiFromModules,
@@ -21,9 +26,14 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   http: typeof http;
+  "lib/ai": typeof lib_ai;
   "lib/auth": typeof lib_auth;
+  "lib/weeklyReadingShared": typeof lib_weeklyReadingShared;
+  "lib/workpools": typeof lib_workpools;
   onboarding: typeof onboarding;
   user: typeof user;
+  weeklyReadingGeneration: typeof weeklyReadingGeneration;
+  weeklyReadings: typeof weeklyReadings;
 }>;
 
 /**
@@ -52,4 +62,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  genWorkpool: import("@convex-dev/workpool/_generated/component.js").ComponentApi<"genWorkpool">;
+};

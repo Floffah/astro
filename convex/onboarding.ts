@@ -69,12 +69,12 @@ export const createNatalChart = action({
                 latitude: args.latitude,
                 longitude: args.longitude,
             },
-            birthChart: response.data.data,
+            birthChart: response.data,
         });
 
         return {
             status: "created",
-            birthChart: response.data.data,
+            birthChart: response.data,
         } as const;
     },
 });

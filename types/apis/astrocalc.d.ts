@@ -68,6 +68,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/transits/range": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Calculate ranged transits
+         * @description This endpoint calculates de-duplicated transit events across a UTC date range. It samples daily charts and returns one event per aspect with active dates, minimum orb, daily orb samples, summary metadata, ingresses, retrograde stations, and moon data.
+         */
+        get: operations["calculateTransitRange"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -87,14 +107,14 @@ export interface components {
         ZodiacSignObject: {
             value: components["schemas"]["ZodiacSign"];
             degree: number;
-            cuspWarning: components["schemas"]["ZodiacSign"] | null;
+            cuspWarning: components["schemas"]["ZodiacSign"] & (string | null);
         };
         /** @enum {string} */
         ZodiacSign: "Aries" | "Taurus" | "Gemini" | "Cancer" | "Leo" | "Virgo" | "Libra" | "Scorpio" | "Sagittarius" | "Capricorn" | "Aquarius" | "Pisces";
-        ZodiacMoonSignObject: {
+        ZodiacMoonSignObject: components["schemas"]["ZodiacSignObject"] & {
             phase: components["schemas"]["MoonPhase"];
             isVoidOfCourse: boolean;
-        } & components["schemas"]["ZodiacSignObject"];
+        };
         /** @enum {string} */
         MoonPhase: "New Moon" | "Waxing Crescent" | "First Quarter" | "Waxing Gibbous" | "Full Moon" | "Waning Gibbous" | "Last Quarter" | "Waning Crescent";
         HouseObject: {
@@ -115,10 +135,13 @@ export interface components {
                 name: components["schemas"]["Planet"];
             };
         };
-        /** @enum {number} */
+        /** @enum {integer} */
         PlanetId: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 15 | 100 | 103 | 104 | 105 | 107 | 108 | 109;
         /** @enum {string} */
         Planet: "Sun" | "Moon" | "Mercury" | "Venus" | "Mars" | "Jupiter" | "Saturn" | "Uranus" | "Neptune" | "Pluto" | "Chiron" | "Ascendant" | "True North Node" | "True South Node" | "Lilith" | "Nadir" | "Descendant" | "MidHeaven";
+        PlanetPositionObject: components["schemas"]["GenericPlanetPositionObject"] & {
+            houseNumber: number;
+        };
         GenericPlanetPositionObject: {
             id: components["schemas"]["PlanetId"];
             name: components["schemas"]["Planet"];
@@ -128,9 +151,6 @@ export interface components {
             degree: number;
             zodiac: components["schemas"]["ZodiacDetailsObject"];
         };
-        PlanetPositionObject: {
-            houseNumber: number;
-        } & components["schemas"]["GenericPlanetPositionObject"];
         AspectObject: {
             planet1: {
                 id: components["schemas"]["PlanetId"];
@@ -155,8 +175,6 @@ export interface components {
         TypeOfAspect: "transit-to-natal" | "natal-to-natal" | "transit-to-transit";
         /** @description An error response. Note that 'error' can be a string, or a ZodError object. */
         ErrorResponse: {
-            /** @constant */
-            success: false;
             error: string | {
                 issues: {
                     code: string;
@@ -193,6 +211,133 @@ export interface components {
             aspects: components["schemas"]["AspectObject"][];
             declinations: components["schemas"]["AspectObject"][];
         };
+        CalculateTransitRangeResponse: {
+            range: {
+                startDate: string;
+                endDate: string;
+                timezone: string;
+            };
+            summaryData: {
+                dominantPlanets: components["schemas"]["DominantPlanetObject"][];
+                dominantHouses: components["schemas"]["DominantHouseObject"][];
+                dominantSigns: components["schemas"]["DominantSignObject"][];
+                dominantAspectTypes: components["schemas"]["DominantAspectTypeObject"][];
+                overallToneScore: number | null;
+                sampleCount: number;
+            };
+            transitNatalEvents: components["schemas"]["TransitNatalRangeEventObject"][];
+            transitTransitEvents: components["schemas"]["TransitTransitRangeEventObject"][];
+            ingresses: components["schemas"]["RangeIngressObject"][];
+            retrogrades: components["schemas"]["RangeRetrogradeObject"][];
+            moonEvents: components["schemas"]["MoonEventObject"][];
+        };
+        DominantPlanetObject: {
+            planet: components["schemas"]["Planet"];
+            count: number;
+            score: number;
+        };
+        DominantHouseObject: {
+            houseNumber: number;
+            count: number;
+            score: number;
+        };
+        DominantSignObject: {
+            sign: components["schemas"]["ZodiacSign"];
+            count: number;
+            score: number;
+        };
+        DominantAspectTypeObject: {
+            aspect: components["schemas"]["Aspect"];
+            count: number;
+            score: number;
+        };
+        TransitNatalRangeEventObject: {
+            aspect: {
+                id: number;
+                name: components["schemas"]["Aspect"];
+            };
+            firstSeen: string;
+            activeFrom: string;
+            exactPeakTime: string | null;
+            activeUntil: string;
+            minimumOrb: number;
+            minimumOrbDate: string;
+            orbAtStart: number | null;
+            orbAtEnd: number | null;
+            applyingAtStart: boolean | null;
+            separatingAtEnd: boolean | null;
+            exactInRange: boolean;
+            importance: number;
+            rank: number;
+            samples: components["schemas"]["RangeAspectSampleObject"][];
+            transitPlanet: components["schemas"]["Planet"];
+            natalBody: components["schemas"]["Planet"];
+            natalHouse: number | null;
+            natalSign: components["schemas"]["ZodiacSign"];
+            transitHouse: number | null;
+            transitSign: components["schemas"]["ZodiacSign"];
+        };
+        RangeAspectSampleObject: {
+            date: string;
+            orb: number;
+            applying: boolean | null;
+            transitSign: components["schemas"]["ZodiacSign"];
+            transitHouse: number | null;
+            natalSign: components["schemas"]["ZodiacSign"] & (string | null);
+            natalHouse: number | null;
+        };
+        TransitTransitRangeEventObject: {
+            aspect: {
+                id: number;
+                name: components["schemas"]["Aspect"];
+            };
+            firstSeen: string;
+            activeFrom: string;
+            exactPeakTime: string | null;
+            activeUntil: string;
+            minimumOrb: number;
+            minimumOrbDate: string;
+            orbAtStart: number | null;
+            orbAtEnd: number | null;
+            applyingAtStart: boolean | null;
+            separatingAtEnd: boolean | null;
+            exactInRange: boolean;
+            importance: number;
+            rank: number;
+            samples: components["schemas"]["RangeAspectSampleObject"][];
+            planet1: components["schemas"]["Planet"];
+            planet2: components["schemas"]["Planet"];
+            planet1House: number | null;
+            planet1Sign: components["schemas"]["ZodiacSign"];
+            planet2House: number | null;
+            planet2Sign: components["schemas"]["ZodiacSign"];
+        };
+        RangeIngressObject: {
+            planet: components["schemas"]["Planet"];
+            fromSign: components["schemas"]["ZodiacSign"] & (string | null);
+            toSign: components["schemas"]["ZodiacSign"];
+            exactTimestamp: string | null;
+            firstSeenDate: string;
+            houseAfterIngress: number | null;
+        };
+        RangeRetrogradeObject: {
+            planet: components["schemas"]["Planet"];
+            /** @enum {string} */
+            stationType: "retrograde" | "direct";
+            exactTimestamp: string | null;
+            firstSeenDate: string;
+            sign: components["schemas"]["ZodiacSign"];
+            degree: number;
+        };
+        MoonEventObject: {
+            date: string;
+            moonSign: components["schemas"]["ZodiacMoonSignObject"];
+            voidOfCourseWindows: {
+                startsAt: string;
+                endsAt: string;
+            }[];
+            majorMoonAspects: components["schemas"]["AspectObject"][];
+        };
     };
     responses: never;
     parameters: never;
@@ -210,8 +355,8 @@ export type SchemaZodiacPositionObject = components['schemas']['ZodiacPositionOb
 export type SchemaZodiacDetailsObject = components['schemas']['ZodiacDetailsObject'];
 export type SchemaPlanetId = components['schemas']['PlanetId'];
 export type SchemaPlanet = components['schemas']['Planet'];
-export type SchemaGenericPlanetPositionObject = components['schemas']['GenericPlanetPositionObject'];
 export type SchemaPlanetPositionObject = components['schemas']['PlanetPositionObject'];
+export type SchemaGenericPlanetPositionObject = components['schemas']['GenericPlanetPositionObject'];
 export type SchemaAspectObject = components['schemas']['AspectObject'];
 export type SchemaAspect = components['schemas']['Aspect'];
 export type SchemaTypeOfAspect = components['schemas']['TypeOfAspect'];
@@ -220,18 +365,36 @@ export type SchemaCalculateDailyTransitsResponse = components['schemas']['Calcul
 export type SchemaIngressObject = components['schemas']['IngressObject'];
 export type SchemaCalculateGenericTransitChartResponse = components['schemas']['CalculateGenericTransitChartResponse'];
 export type SchemaCalculateGenericChartResponse = components['schemas']['CalculateGenericChartResponse'];
+export type SchemaCalculateTransitRangeResponse = components['schemas']['CalculateTransitRangeResponse'];
+export type SchemaDominantPlanetObject = components['schemas']['DominantPlanetObject'];
+export type SchemaDominantHouseObject = components['schemas']['DominantHouseObject'];
+export type SchemaDominantSignObject = components['schemas']['DominantSignObject'];
+export type SchemaDominantAspectTypeObject = components['schemas']['DominantAspectTypeObject'];
+export type SchemaTransitNatalRangeEventObject = components['schemas']['TransitNatalRangeEventObject'];
+export type SchemaRangeAspectSampleObject = components['schemas']['RangeAspectSampleObject'];
+export type SchemaTransitTransitRangeEventObject = components['schemas']['TransitTransitRangeEventObject'];
+export type SchemaRangeIngressObject = components['schemas']['RangeIngressObject'];
+export type SchemaRangeRetrogradeObject = components['schemas']['RangeRetrogradeObject'];
+export type SchemaMoonEventObject = components['schemas']['MoonEventObject'];
 export type $defs = Record<string, never>;
 export interface operations {
     calculateBirthChart: {
         parameters: {
             query: {
+                /** @description The UTC year of birth */
                 year: number;
+                /** @description The UTC month of birth. NOT zero-indexed */
                 month: number;
+                /** @description The UTC day of birth */
                 day: number;
-                hour?: number;
-                minute?: number;
-                latitude: number;
-                longitude: number;
+                /** @description The UTC hour of birth */
+                hour?: number | null;
+                /** @description The UTC minute of birth */
+                minute?: number | null;
+                /** @description The latitude of the birth location */
+                latitude?: number | null;
+                /** @description The longitude of the birth location */
+                longitude?: number | null;
             };
             header?: never;
             path?: never;
@@ -245,10 +408,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        success: boolean;
-                        data: components["schemas"]["CalculateBirthChartResponse"];
-                    };
+                    "application/json": components["schemas"]["CalculateBirthChartResponse"];
                 };
             };
             /** @description User Error */
@@ -260,23 +420,44 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Calculation Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     calculateDailyTransits: {
         parameters: {
-            query: {
+            query?: {
+                /** @description The UTC year of birth */
                 birthYear?: number;
+                /** @description The UTC month of birth. NOT zero-indexed */
                 birthMonth?: number;
+                /** @description The UTC day of birth */
                 birthDay?: number;
-                birthMinute?: number;
-                birthHour?: number;
-                birthLatitude?: number;
-                birthLongitude?: number;
+                /** @description The UTC minute of birth */
+                birthMinute?: number | null;
+                /** @description The UTC hour of birth */
+                birthHour?: number | null;
+                /** @description The latitude of the birth location */
+                birthLatitude?: number | null;
+                /** @description The longitude of the birth location */
+                birthLongitude?: number | null;
+                /** @description The UTC year to calculate transits for */
                 transitYear?: number;
+                /** @description The UTC month to calculate transits for. NOT zero-indexed */
                 transitMonth?: number;
+                /** @description The UTC day to calculate transits for */
                 transitDay?: number;
-                transitLatitude: number;
-                transitLongitude: number;
+                /** @description The latitude of the location to calculate transits for */
+                transitLatitude?: number | null;
+                /** @description The longitude of the location to calculate transits for */
+                transitLongitude?: number | null;
             };
             header?: never;
             path?: never;
@@ -290,14 +471,20 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        success: boolean;
-                        data: components["schemas"]["CalculateDailyTransitsResponse"];
-                    };
+                    "application/json": components["schemas"]["CalculateDailyTransitsResponse"];
                 };
             };
             /** @description User Error */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Calculation Error */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -310,11 +497,16 @@ export interface operations {
     calculateGenericTransitChart: {
         parameters: {
             query: {
+                /** @description The UTC year to calculate transits for */
                 year: number;
+                /** @description The UTC month to calculate transits for. NOT zero-indexed */
                 month: number;
+                /** @description The UTC day to calculate transits for */
                 day: number;
-                hour?: number;
-                minute?: number;
+                /** @description The UTC hour to calculate transits for */
+                hour?: number | null;
+                /** @description The UTC minute to calculate transits for */
+                minute?: number | null;
             };
             header?: never;
             path?: never;
@@ -328,14 +520,91 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        success: boolean;
-                        data: components["schemas"]["CalculateGenericTransitChartResponse"];
-                    };
+                    "application/json": components["schemas"]["CalculateGenericTransitChartResponse"];
                 };
             };
             /** @description User Error */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Calculation Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    calculateTransitRange: {
+        parameters: {
+            query: {
+                /** @description The UTC year of birth */
+                birthYear: number;
+                /** @description The UTC month of birth. NOT zero-indexed */
+                birthMonth: number;
+                /** @description The UTC day of birth */
+                birthDay: number;
+                /** @description The UTC hour of birth */
+                birthHour?: number | null;
+                /** @description The UTC minute of birth */
+                birthMinute?: number | null;
+                /** @description The latitude of the birth location */
+                birthLatitude?: number | null;
+                /** @description The longitude of the birth location */
+                birthLongitude?: number | null;
+                /** @description The UTC start year for the transit range */
+                transitStartYear: number;
+                /** @description The UTC start month for the transit range. NOT zero-indexed */
+                transitStartMonth: number;
+                /** @description The UTC start day for the transit range */
+                transitStartDay: number;
+                /** @description The UTC end year for the transit range */
+                transitEndYear: number;
+                /** @description The UTC end month for the transit range. NOT zero-indexed */
+                transitEndMonth: number;
+                /** @description The UTC end day for the transit range */
+                transitEndDay: number;
+                /** @description The latitude of the location to calculate transits for */
+                transitLatitude?: number | null;
+                /** @description The longitude of the location to calculate transits for */
+                transitLongitude?: number | null;
+                /** @description Timezone label for the requested range. Event timestamps are currently UTC. */
+                timezone?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CalculateTransitRangeResponse"];
+                };
+            };
+            /** @description User Error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Calculation Error */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };

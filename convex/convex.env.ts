@@ -7,4 +7,5 @@ export const env = createEnv({
     ...clerk,
     CLERK_USERS_WEBHOOK_SIGNING_SECRET: v.string(),
     CLERK_SECRET_KEY: v.string(),
+    OPENROUTER_API_KEY: v.string(),
 });

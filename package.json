@@ -17,8 +17,11 @@
     "dependencies": {
         "@clerk/nextjs": "^7.5.13",
         "@clerk/ui": "^1.24.2",
+        "@convex-dev/workpool": "^0.4.7",
+        "@openrouter/ai-sdk-provider": "^3.0.0",
         "@tanstack/react-form": "^1.33.0",
         "@xstate/react": "^6.1.0",
+        "ai": "^7.0.16",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "convex": "^1.42.1",
