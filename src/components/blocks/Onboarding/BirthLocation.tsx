@@ -70,8 +70,7 @@ export default function OnboardingBirthLocation({
                     <div className="space-y-1.5">
                         <CardTitle>Your birthplace</CardTitle>
                         <CardDescription>
-                            Use the latitude and longitude of the place you were
-                            born.
+                            Use decimal coordinates for the place you were born.
                         </CardDescription>
                     </div>
                 </div>

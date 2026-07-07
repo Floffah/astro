@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/home", "/onboarding"]);
 
-const isAnonymousRoute = createRouteMatcher(["/"]);
+const isAnonymousRoute = createRouteMatcher([]);
 
 export default clerkMiddleware(async (auth, req) => {
     if (isProtectedRoute(req)) await auth.protect();

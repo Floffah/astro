@@ -11,12 +11,12 @@ export default function HomePage() {
                         Home
                     </p>
                     <h1 className="font-serif text-5xl leading-none text-balance sm:text-6xl">
-                        Your chart home is taking shape.
+                        Your chart is saved.
                     </h1>
                     <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
-                        This protected page is ready for the next pass, when
-                        onboarding can save your birth chart and unlock the
-                        daily astrology experience.
+                        The next build of this page will show the chart you
+                        saved, today&apos;s transits, and a short reading for
+                        the day.
                     </p>
                 </div>
             </section>

@@ -6,7 +6,7 @@ import { QueryClient } from "@tanstack/query-core";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren } from "react";
 
 if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
     throw new Error("Missing NEXT_PUBLIC_CONVEX_URL in your .env file");

@@ -1,6 +1,5 @@
 import { convexAction } from "@convex-dev/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { useConvex } from "convex/react";
 import {
     ArrowLeftIcon,
     ArrowRightIcon,
@@ -57,8 +56,8 @@ export default function OnboardingConfirm({ back }: { back: () => void }) {
                         <div className="space-y-1.5">
                             <CardTitle>Chart unavailable</CardTitle>
                             <CardDescription>
-                                Something interrupted the chart calculation.
-                                Check your details and try again.
+                                We could not calculate the chart. Check the
+                                date, time, and coordinates.
                             </CardDescription>
                         </div>
                     </div>
@@ -67,7 +66,7 @@ export default function OnboardingConfirm({ back }: { back: () => void }) {
                 <CardFooter className="justify-between gap-3">
                     <Button type="button" variant="outline" onClick={back}>
                         <ArrowLeftIcon data-icon="inline-start" />
-                        Something looks off
+                        Edit details
                     </Button>
 
                     <Button
@@ -97,7 +96,7 @@ export default function OnboardingConfirm({ back }: { back: () => void }) {
                         <div className="space-y-1.5">
                             <CardTitle>Computing your birth chart</CardTitle>
                             <CardDescription>
-                                Mapping the first outline of your sky.
+                                Calculating the Sun, Moon, and rising signs.
                             </CardDescription>
                         </div>
                     </div>
@@ -120,8 +119,8 @@ export default function OnboardingConfirm({ back }: { back: () => void }) {
                     <div className="space-y-1.5">
                         <CardTitle>Your chart is ready</CardTitle>
                         <CardDescription>
-                            These are the three signs that anchor your birth
-                            chart.
+                            Here are the signs we calculated from your birth
+                            details.
                         </CardDescription>
                     </div>
                 </div>
@@ -168,12 +167,12 @@ export default function OnboardingConfirm({ back }: { back: () => void }) {
             <CardFooter className="justify-between gap-3">
                 <Button type="button" variant="outline" onClick={back}>
                     <ArrowLeftIcon data-icon="inline-start" />
-                    Something looks off
+                    Edit details
                 </Button>
 
                 <Button type="button" asChild>
                     <Link href="/home">
-                        Looks good!
+                        Use this chart
                         <ArrowRightIcon data-icon="inline-end" />
                     </Link>
                 </Button>

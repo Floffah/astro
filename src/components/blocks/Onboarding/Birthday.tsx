@@ -32,7 +32,7 @@ export default function OnboardingBirthday({ next }: { next: () => void }) {
         },
         validators: {
             onSubmit: z.object({
-                birthday: z.string().min(1, "Birthday is required"),
+                birthday: z.string().min(1, "Add your birth date and time"),
             }),
         },
         onSubmit: ({ value }) => {
@@ -55,7 +55,7 @@ export default function OnboardingBirthday({ next }: { next: () => void }) {
                     <div className="space-y-1.5">
                         <CardTitle>Your birthday</CardTitle>
                         <CardDescription>
-                            Use the date and local time of your birth.
+                            Use the date and local time you were born.
                         </CardDescription>
                     </div>
                 </div>
@@ -84,7 +84,8 @@ export default function OnboardingBirthday({ next }: { next: () => void }) {
                                     aria-invalid={!field.state.meta.isValid}
                                 />
                                 <FieldDescription>
-                                    Midnight is okay if you are unsure.
+                                    If you do not know the time, use midnight
+                                    for now.
                                 </FieldDescription>
                             </Field>
                         )}

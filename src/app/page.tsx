@@ -1,14 +1,29 @@
-import { SignInButton } from "@clerk/nextjs";
+import { Show, SignInButton } from "@clerk/nextjs";
 import {
     ArrowRightIcon,
     ChartNoAxesCombined,
     MoonIcon,
     SparklesIcon,
 } from "lucide-react";
+import Link from "next/link";
+import { Suspense } from "react";
 
 import Navbar from "@/components/blocks/Navbar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+
+const signedOutFallback = (
+    <>
+        <SignInButton mode="modal">
+            <Button size="lg">
+                Sign in
+                <ArrowRightIcon data-icon="inline-end" />
+            </Button>
+        </SignInButton>
+
+        <p className="text-sm text-muted-foreground">Free to start</p>
+    </>
+);
 
 export default function Home() {
     return (
@@ -20,7 +35,7 @@ export default function Home() {
                     <div className="max-w-3xl">
                         <div className="mb-6 flex items-center gap-2 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                             <SparklesIcon className="size-3.5" />
-                            Personal astrology with no walls
+                            Free birth chart
                         </div>
 
                         <h1 className="max-w-2xl font-serif text-5xl leading-[0.95] tracking-normal text-balance sm:text-6xl lg:text-7xl">
@@ -28,23 +43,25 @@ export default function Home() {
                         </h1>
 
                         <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-                            Sign in to begin your personalized astrology
-                            experience. Core features are free forever. See your
-                            natal chart, get daily transits, and receive
-                            personal summaries and readings that grow with you
+                            Create an account to save your birth details. Astro
+                            by Floffah shows your natal chart first, then uses
+                            today&apos;s transits for short daily readings.
                         </p>
 
                         <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-                            <SignInButton mode="modal">
-                                <Button size="lg">
-                                    Sign in
-                                    <ArrowRightIcon data-icon="inline-end" />
-                                </Button>
-                            </SignInButton>
-
-                            <p className="text-sm text-muted-foreground">
-                                No credit card required
-                            </p>
+                            <Suspense fallback={signedOutFallback}>
+                                <Show when="signed-in">
+                                    <Button size="lg" asChild>
+                                        <Link href="/home">
+                                            Open app
+                                            <ArrowRightIcon data-icon="inline-end" />
+                                        </Link>
+                                    </Button>
+                                </Show>
+                                <Show when="signed-out">
+                                    {signedOutFallback}
+                                </Show>
+                            </Suspense>
                         </div>
                     </div>
                     <aside className="hidden min-h-107.5 flex-col gap-6 border border-border bg-card p-6 shadow-sm lg:flex">
@@ -67,19 +84,18 @@ export default function Home() {
 
                         <div className="flex flex-col gap-2">
                             <p className="font-serif text-2xl leading-tight">
-                                Your chart becomes the starting point, not the
-                                whole story.
+                                Your chart is the reference point.
                             </p>
                             <p className="text-sm leading-6 text-muted-foreground">
-                                Get daily insights that connect the dots between
-                                the sky and your life, without overwhelming you
-                                with technical details or jargon.
+                                We use your birth date, time, and place to
+                                calculate your Sun, Moon, rising sign, and daily
+                                transits.
                             </p>
                         </div>
 
                         <div className="flex items-center gap-3 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                             <ChartNoAxesCombined className="size-4" />
-                            Natal chart / Daily glance / Horoscope
+                            Birth chart / Transits / Daily read
                         </div>
                     </aside>
                 </section>

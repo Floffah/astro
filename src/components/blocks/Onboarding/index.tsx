@@ -38,14 +38,13 @@ export default function Onboarding() {
                     </div>
 
                     <h1 className="font-serif text-5xl leading-none text-balance sm:text-6xl">
-                        Set the first point in your sky.
+                        Add the details we need for your chart.
                     </h1>
 
                     <p className="mt-6 text-base leading-7 text-muted-foreground">
-                        To get the most out of your daily astrology experience,
-                        we need to know where to look. Adding your birth details
-                        lets us save your chart and provide personal insights
-                        and forecasts.
+                        Astrology depends on time and place. Add your birth
+                        date, birth time, and birthplace so we can calculate
+                        your chart and use it for daily readings.
                     </p>
 
                     <div className="mt-10 grid gap-3">
